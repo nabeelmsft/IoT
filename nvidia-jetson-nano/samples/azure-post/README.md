@@ -53,7 +53,7 @@ python custom-model-azure-post.py --classNameForTargetObject=[Target object clas
     --classNameForTargetObject = class name for the object that you want to detect in your custom model
     --model = path to your custom model. 
     --labels = path for the labels file on your custom model
-
+    --detectionThreshold = percentage value of threshold for object detection.
 
 
 # Conclusion
