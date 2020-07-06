@@ -3,6 +3,11 @@ How to detect an object using a pre-trained model and post to Azure IoT Hub.
 
 # Pre-requisites
 ## Azure IoT Hub setup
+The very first step is to create Azure IoT Hub in your Azure subscription. Follow the directions mentioned below to setup Azure IoT hub.
+
+[Create an IoT hub using the Azure portal]: https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal
+
+Once the IoT Hub is setup, you can proceed with the steps mentioned in the following section to register your NVidia Jetson Nano device.
 ## Device conection setup
 ## Device pre-requisites
 
