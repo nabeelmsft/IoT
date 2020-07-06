@@ -15,7 +15,8 @@ Once the IoT Hub is setup, you can proceed with the steps mentioned in the follo
 2. Select "IoT devices" and select "+ New".
 ![alt text](images/selectiotdevices.png "Select IoT devices and select +New")
 
-3. Enter the "Device ID".
+3. Enter the Device ID.
+
 ![alt text](images/createdevice.png "Enter device id")
 
 4. Save new device.
