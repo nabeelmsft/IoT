@@ -9,6 +9,20 @@ The very first step is to create Azure IoT Hub in your Azure subscription. Follo
 
 Once the IoT Hub is setup, you can proceed with the steps mentioned in the following section to register your NVidia Jetson Nano device.
 ## Device conection setup
+1. Navigate to your Azure IoT Hub.
+![alt text](images/navigatetoazureiothub.png "Navigate to Azure IoT Hub")
+
+2. Select "IoT devices" and select "+ New".
+![alt text](images/selectiotdevices.png "Select IoT devices and select +New")
+
+3. Enter the "Device ID".
+![alt text](images/createdevice.png "Enter device id")
+
+4. Save new device.
+5. Select newly created device.
+6. Save "Primary connection string". This will be used in defining "IOTHUB_DEVICE_CONNECTION_STRING" environment variable on NVIDIA Jetson device.
+![alt text](images/deviceconnectionstring.png "Enter device id")
+
 ## Device pre-requisites
 
 # Steps
