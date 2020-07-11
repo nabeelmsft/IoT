@@ -3,9 +3,12 @@
 In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jetson Nano device and send direct message to the newly created module and get its response.
 ## Prerequisites
 1. Azure IoT Hub
-1. Docker Image repository
+1. IoT Edge Device registered. More details can be found at : https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device#register-in-the-azure-portal
+1. Docker Image repository: This will be used to push the container images to. This tutorial requires access to already created Docker Image Repository with user name and password. Details on how to create Azure Container Registry can be found at: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal
 1. VS Code
 1. Azure IoT Tools for VS Code - This should configured and connected to your IoT Hub. More details can be found at : https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools
+1. Preconfigured Nvidia Jetson with IoT Edge runtime installed and configured to use Azure IoT Edge. More details can be found at: https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux
+
 ## Steps
 ### Setting up the environment
 1. Create device identity
@@ -13,11 +16,11 @@ In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jets
 az iot hub device-identity create --device-id myEdgeDevice --edge-enabled --hub-name {hub_name}
 ```
 1. On VS Code open command palette and enter command Azure IoT Edge: New IoT Edge solution.
-2. Choose the location for solution files.
-3. Choose name for solution. NvidiaJetsonEdgeSolution was selected for this tutorial.
-4. On "Select module template" question, choose "Python Module".
-5. Enter the name for "Python Module". For this tutorial "RequestProcessorModule" was chosen.
-6. For "Provide Docker image repository" question, choose a pre-existing image repository followed by name of your repository. Example: [your-docker-image-registry].azurecr.io/requestprocessormodule
+1. Choose the location for solution files.
+1. Choose name for solution. NvidiaJetsonEdgeSolution was selected for this tutorial.
+1. On "Select module template" question, choose "Python Module".
+1. Enter the name for "Python Module". For this tutorial "RequestProcessorModule" was chosen.
+1. For "Provide Docker image repository" question, choose a pre-existing image repository followed by name of your repository. Example: [your-docker-image-registry].azurecr.io/requestprocessormodule
 After the above step, VS Code will open a new window with the following view:
 
 ![alt text](images/NvidiaJetsonEdgeSolutionView.PNG "Nvidia Jetson Edge Solution View")
