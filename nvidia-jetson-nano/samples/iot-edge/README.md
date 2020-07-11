@@ -21,6 +21,7 @@ az iot hub device-identity create --device-id myEdgeDevice --edge-enabled --hub-
 After the above step, VS Code will open a new window with the following view:
 
 ![alt text](images/NvidiaJetsonEdgeSolutionView.PNG "Nvidia Jetson Edge Solution View")
+
 7. Open the .env file and enter the user name and password for your docker image registry as shown below:
 ![alt text](images/environment-settings.PNG ".env file content")
 8. On VS Code open the command palette and enter command "Azure IoT Edge: Set Default Target Platform for Edge Solution".
