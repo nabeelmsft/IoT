@@ -21,7 +21,7 @@ az iot hub device-identity create --device-id myEdgeDevice --edge-enabled --hub-
 After the above step, VS Code will open a new window with the following view:
 ![alt text](images/NvidiaJetsonEdgeSolutionView.PNG "Nvidia Jetson Edge Solution View")
 7. Open the .env file and enter the user name and password for your docker image registry as shown below:
-![alt text](images/environment-settings.png ".env file content")
+![alt text](images/environment-settings.PNG ".env file content")
 8. On VS Code open the command palette and enter command "Azure IoT Edge: Set Default Target Platform for Edge Solution".
 9. Select "arm64v8" or your correct architecture. You can find out the architecture of your device by running the following command on the device:
 ```bash
@@ -30,7 +30,7 @@ aarch64
 ```
 In this case "aarch64" corresponds to "arm64v8".
 Once the architecture is set the settings.json file would look like:
-![alt text](images/settings-json.png "settings.json file")
+![alt text](images/settings-json.PNG "settings.json file")
 
 ### Adding code
 1. Open main.py as shown below:
@@ -155,9 +155,9 @@ if __name__ == "__main__":
 
 ### Deploy
 1. Right click "deployment.template.json and select "Build and Push IoT Edge Solution" as shown below:
-![alt text](images/build-and-push-iot-edge-solution.png "Build and Push IoT Edge Solution")
+![alt text](images/build-and-push-iot-edge-solution.PNG "Build and Push IoT Edge Solution")
 2. The result of above step will be the creation of new folder called "config". The folder will contain a deployment json file corresponding to the default platform selected on step 8 under "Setting up the environment" section. For our Nvidia Jetson Nano device the architecture is arm64v8 as shown below:
-![alt text](images/config-for-device.png "Device configuration")
+![alt text](images/config-for-device.PNG "Device configuration")
 3. [Optional] Removing of SimulatedTemperatureSensor module. If you open the "deployment.arm64v8.json" file under config folder, you will notice that it comes with "RequestProcessorModule" and "SimulatedTemperatureSensor" module. This means if you deploy this deployment json file to the device, you will end up with additional SimulatedTemperatureSensor module. If you would like to not have that module added, then simple remove the section as shown below:
 ![alt text](images/Remove-SimulatedTemperatureSensor.png "Remove  SimulatedTemperatureSensor module")
 4. Open the "AZURE IOT HUB" section under the "Explorer" panel on VS Code.
@@ -197,7 +197,7 @@ $ sudo iotedge RequestProcessorModule
 ```
 This will show the following result:
 
-![alt text](images/device-run.png "Device run")
+![alt text](images/device-run.PNG "Device run")
 
 
 ### Conclusion
