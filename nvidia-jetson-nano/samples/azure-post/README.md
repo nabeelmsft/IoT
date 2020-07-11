@@ -2,7 +2,7 @@
 
 In this tutorial we will see how we can create a custom python code to detect an object in custom pre-trained model and post to Azure IoT Hub.  This tutorial leverages [@dusty-nv's](https://github.com/dusty-nv) custom trained model example mentioned [here](https://github.com/dusty-nv/jetson-inference/blob/master/docs/pytorch-collect.md) to create a custom pre-trained model.
 
-# Pre-requisites
+# Prerequisites
 ## Azure IoT Hub setup
 The very first step is to create Azure IoT Hub in your Azure subscription. Follow the directions mentioned below to setup Azure IoT hub.
 
