@@ -19,6 +19,7 @@ az iot hub device-identity create --device-id myEdgeDevice --edge-enabled --hub-
 5. Enter the name for "Python Module". For this tutorial "RequestProcessorModule" was chosen.
 6. For "Provide Docker image repository" question, choose a pre-existing image repository followed by name of your repository. Example: [your-docker-image-registry].azurecr.io/requestprocessormodule
 After the above step, VS Code will open a new window with the following view:
+
 ![alt text](images/NvidiaJetsonEdgeSolutionView.PNG "Nvidia Jetson Edge Solution View")
 7. Open the .env file and enter the user name and password for your docker image registry as shown below:
 ![alt text](images/environment-settings.PNG ".env file content")
@@ -157,16 +158,19 @@ if __name__ == "__main__":
 1. Right click "deployment.template.json and select "Build and Push IoT Edge Solution" as shown below:
 ![alt text](images/build-and-push-iot-edge-solution.PNG "Build and Push IoT Edge Solution")
 2. The result of above step will be the creation of new folder called "config". The folder will contain a deployment json file corresponding to the default platform selected on step 8 under "Setting up the environment" section. For our Nvidia Jetson Nano device the architecture is arm64v8 as shown below:
+
 ![alt text](images/config-for-device.PNG "Device configuration")
 3. [Optional] Removing of SimulatedTemperatureSensor module. If you open the "deployment.arm64v8.json" file under config folder, you will notice that it comes with "RequestProcessorModule" and "SimulatedTemperatureSensor" module. This means if you deploy this deployment json file to the device, you will end up with additional SimulatedTemperatureSensor module. If you would like to not have that module added, then simple remove the section as shown below:
 ![alt text](images/Remove-SimulatedTemperatureSensor.png "Remove  SimulatedTemperatureSensor module")
 4. Open the "AZURE IOT HUB" section under the "Explorer" panel on VS Code.
 5. Select the target IoT Edge Device and right click.
 6. Select "Create Deployment for Single Device" menu item as shown below:
+
 ![alt text](images/create-deployment-for-single-device.png "Create Deployment for Single Device")
 7. This will open a dialog window to asking to select Edge Deployment Manifest. Select the correct deployment manifest file that corresponds to your device architecture under the config folder  as shown below:
 ![alt text](images/select-deployment-file.png "Select Edge Deployment Manifest file")
-This will result in the deployment of your edge module as shownn below:
+This will result in the deployment of your edge module as shown below:
+
 ![alt text](images/request-processor-module-deployed.png "Request Processor Module deployed")
 8. Head over the Azure Portal and navigate to IoT Edge Device. This will show the newly created IoT Edge module as shown below:
 ![alt text](images/portal-view-edgemodule.png "Portal view")
