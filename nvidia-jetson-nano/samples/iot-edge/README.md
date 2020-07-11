@@ -2,12 +2,12 @@
 ## Introduction
 In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jetson Nano device and send direct message to the newly created module and get its response.
 ## Prerequisites
-1. Azure IoT Hub
-1. IoT Edge Device registered. More details can be found at : https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device#register-in-the-azure-portal
-1. Docker Image repository: This will be used to push the container images to. This tutorial requires access to already created Docker Image Repository with user name and password. Details on how to create Azure Container Registry can be found at: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal
-1. VS Code
-1. Azure IoT Tools for VS Code - This should configured and connected to your IoT Hub. More details can be found at : https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools
-1. Preconfigured Nvidia Jetson with IoT Edge runtime installed and configured to use Azure IoT Edge. More details can be found at: https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux
+1. **Azure IoT Hub**. Steps to create Azure IoT Hub can be found at: https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal
+2. **IoT Edge Device registered**. More details can be found at : https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device#register-in-the-azure-portal
+3. **Docker Image repository**: This will be used to push the container images to. This tutorial requires access to already created Docker Image Repository with user name and password. Details on how to create Azure Container Registry can be found at: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal
+4. **VS Code**
+5. **Azure IoT Tools for VS Code**: This should configured and connected to your IoT Hub. More details can be found at : https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools
+6. **Preconfigured Nvidia Jetson device** with IoT Edge runtime installed and configured to use Azure IoT Edge. More details can be found at: https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux
 
 ## Steps
 ### Setting up the environment
