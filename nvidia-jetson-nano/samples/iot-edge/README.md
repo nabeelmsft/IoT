@@ -3,7 +3,7 @@
 In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jetson Nano device and send direct message to the newly created module and get its response.
 ## Prerequisites
 1. **Azure IoT Hub**. Steps to create Azure IoT Hub can be found at: https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal
-2. **IoT Edge Device registered**. More details can be found at : https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device#register-in-the-azure-portal
+2. **IoT Edge Device registered**. Details can be found at : https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device#register-in-the-azure-portal
 3. **Docker Image repository**: This will be used to push the container images to. This tutorial requires access to already created Docker Image Repository with user name and password. Details on how to create Azure Container Registry can be found at: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal
 4. **VS Code**
 5. **Azure IoT Tools for VS Code**: This should configured and connected to your IoT Hub. More details can be found at : https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     # If using Python 3.7 or above, you can use following code instead:
     # asyncio.run(main())
 ```
-3. Test
+
 
 ### Deploy
 1. Right click "deployment.template.json and select "Build and Push IoT Edge Solution" as shown below:
