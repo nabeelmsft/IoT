@@ -3,7 +3,7 @@
 
 ## Introduction
 
-In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jetson Nano device and send direct message to the newly created module and get its response.
+In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jetson Nano device and send direct message to the newly created module and get its response. This tutorial can also be used on any Linux VM that Azure IoT Edge runtime supports. Just deploy the Azure IoT Edge runtime and use that VM as your device. 
 
 ## Prerequisites
 
@@ -19,23 +19,25 @@ In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jets
 ### Setting up the environment
 
 1. Create device identity as shown below:
+
 ```bash
 az iot hub device-identity create --device-id [your-azure-iot-edge-device] --edge-enabled --hub-name [your-azure-iot-hub_name]
 ```
-2. On VS Code open command palette and enter command Azure IoT Edge: New IoT Edge solution.
-3. Choose the location for solution files.
-4. Choose name for solution. NvidiaJetsonEdgeSolution was selected for this tutorial.
-5. On "Select module template" question, choose "Python Module".
-6. Enter the name for "Python Module". For this tutorial "RequestProcessorModule" was chosen.
-7. For "Provide Docker image repository" question, choose a pre-existing image repository followed by name of your repository. Example: [your-docker-image-registry].azurecr.io/requestprocessormodule
+
+1. On VS Code open command palette and enter command Azure IoT Edge: New IoT Edge solution.
+1. Choose the location for solution files.
+1. Choose name for solution. NvidiaJetsonEdgeSolution was selected for this tutorial.
+1. On "Select module template" question, choose "Python Module".
+1. Enter the name for "Python Module". For this tutorial "RequestProcessorModule" was chosen.
+1. For "Provide Docker image repository" question, choose a pre-existing image repository followed by name of your repository. Example: [your-docker-image-registry].azurecr.io/requestprocessormodule
 After the above step, VS Code will open a new window with the following view:
 
 ![alt text](images/NvidiaJetsonEdgeSolutionView.PNG "Nvidia Jetson Edge Solution View")
 
-8. Open the .env file and enter the user name and password for your docker image registry as shown below:
+1. Open the .env file and enter the user name and password for your docker image registry as shown below:
 ![alt text](images/environment-settings.PNG ".env file content")
-9. On VS Code open the command palette and enter command "Azure IoT Edge: Set Default Target Platform for Edge Solution".
-10. Select "arm64v8" or your correct architecture. You can find out the architecture of your device by running the following command on the device:
+1. On VS Code open the command palette and enter command "Azure IoT Edge: Set Default Target Platform for Edge Solution".
+1. Select "arm64v8" or your correct architecture. You can find out the architecture of your device by running the following command on the device:
 
 ```bash
 $ uname -m
@@ -173,6 +175,7 @@ if __name__ == "__main__":
 
 1. Right click "deployment.template.json and select "Build and Push IoT Edge Solution" as shown below:
 ![alt text](images/build-and-push-iot-edge-solution.PNG "Build and Push IoT Edge Solution")
+
 2. The result of above step will be the creation of new folder called "config". The folder will contain a deployment json file corresponding to the default platform selected on step 8 under "Setting up the environment" section. For our Nvidia Jetson Nano device the architecture is arm64v8 as shown below:
 
 ![alt text](images/config-for-device.PNG "Device configuration")
