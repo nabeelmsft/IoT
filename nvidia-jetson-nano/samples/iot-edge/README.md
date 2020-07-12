@@ -18,26 +18,33 @@ In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jets
 
 ### Setting up the environment
 
-1. Create device identity as shown below:
+Step 1. Create device identity as shown below:
 
 ```bash
 az iot hub device-identity create --device-id [your-azure-iot-edge-device] --edge-enabled --hub-name [your-azure-iot-hub_name]
 ```
 
-1. On VS Code open command palette and enter command Azure IoT Edge: New IoT Edge solution.
-1. Choose the location for solution files.
-1. Choose name for solution. NvidiaJetsonEdgeSolution was selected for this tutorial.
-1. On "Select module template" question, choose "Python Module".
-1. Enter the name for "Python Module". For this tutorial "RequestProcessorModule" was chosen.
-1. For "Provide Docker image repository" question, choose a pre-existing image repository followed by name of your repository. Example: [your-docker-image-registry].azurecr.io/requestprocessormodule
+Step 2. On VS Code open command palette and enter command Azure IoT Edge: New IoT Edge solution.
+
+Step 3. Choose the location for solution files.
+
+Step 4. Choose name for solution. NvidiaJetsonEdgeSolution was selected for this tutorial.
+
+Step 5. On "Select module template" question, choose "Python Module".
+
+Step 6. Enter the name for "Python Module". For this tutorial "RequestProcessorModule" was chosen.
+
+Step 7. For "Provide Docker image repository" question, choose a pre-existing image repository followed by name of your repository. Example: [your-docker-image-registry].azurecr.io/requestprocessormodule
 After the above step, VS Code will open a new window with the following view:
 
 ![alt text](images/NvidiaJetsonEdgeSolutionView.PNG "Nvidia Jetson Edge Solution View")
 
-1. Open the .env file and enter the user name and password for your docker image registry as shown below:
+Step 8. Open the .env file and enter the user name and password for your docker image registry as shown below:
 ![alt text](images/environment-settings.PNG ".env file content")
-1. On VS Code open the command palette and enter command "Azure IoT Edge: Set Default Target Platform for Edge Solution".
-1. Select "arm64v8" or your correct architecture. You can find out the architecture of your device by running the following command on the device:
+
+Step 9. On VS Code open the command palette and enter command "Azure IoT Edge: Set Default Target Platform for Edge Solution".
+
+Step 10. Select "arm64v8" or your correct architecture. You can find out the architecture of your device by running the following command on the device:
 
 ```bash
 $ uname -m
@@ -50,8 +57,9 @@ Once the architecture is set the settings.json file would look like:
 
 ### Adding code
 
-1. Open main.py.
-2. Replace the code with the code mentioned below:
+Step 1. Open "main.py"
+
+Step2 . Replace the code with the code mentioned below:
 
 ```python
 # Copyright (c) Microsoft. All rights reserved.
@@ -173,39 +181,44 @@ if __name__ == "__main__":
 
 ### Deploy
 
-1. Right click "deployment.template.json and select "Build and Push IoT Edge Solution" as shown below:
+Step 1. Right click "deployment.template.json and select "Build and Push IoT Edge Solution" as shown below:
 ![alt text](images/build-and-push-iot-edge-solution.PNG "Build and Push IoT Edge Solution")
 
-2. The result of above step will be the creation of new folder called "config". The folder will contain a deployment json file corresponding to the default platform selected on step 8 under "Setting up the environment" section. For our Nvidia Jetson Nano device the architecture is arm64v8 as shown below:
+Step 2. The result of above step will be the creation of new folder called "config". The folder will contain a deployment json file corresponding to the default platform selected on step 8 under "Setting up the environment" section. For our Nvidia Jetson Nano device the architecture is arm64v8 as shown below:
 
 ![alt text](images/config-for-device.PNG "Device configuration")
 
-3. [Optional] Removing of SimulatedTemperatureSensor module. If you open the "deployment.arm64v8.json" file under config folder, you will notice that it comes with "RequestProcessorModule" and "SimulatedTemperatureSensor" module. This means if you deploy this deployment json file to the device, you will end up with additional SimulatedTemperatureSensor module. If you would like to not have that module added, then simple remove the section as shown below:
+Step 3. [Optional] Removing of SimulatedTemperatureSensor module. If you open the "deployment.arm64v8.json" file under config folder, you will notice that it comes with "RequestProcessorModule" and "SimulatedTemperatureSensor" module. This means if you deploy this deployment json file to the device, you will end up with additional SimulatedTemperatureSensor module. If you would like to not have that module added, then simple remove the section as shown below:
 ![alt text](images/Remove-SimulatedTemperatureSensor.png "Remove  SimulatedTemperatureSensor module")
 
-4. Open the "AZURE IOT HUB" section under the "Explorer" panel on VS Code.
-5. Select the target IoT Edge Device and right click.
-6. Select "Create Deployment for Single Device" menu item as shown below:
+Step 4. Open the "AZURE IOT HUB" section under the "Explorer" panel on VS Code.
+
+Step 5. Select the target IoT Edge Device and right click.
+
+Step 6. Select "Create Deployment for Single Device" menu item as shown below:
 
 ![alt text](images/create-deployment-for-single-device.png "Create Deployment for Single Device")
 
-7. This will open a dialog window to asking to select Edge Deployment Manifest. Select the correct deployment manifest file that corresponds to your device architecture under the config folder  as shown below:
+Step 7. This will open a dialog window to asking to select Edge Deployment Manifest. Select the correct deployment manifest file that corresponds to your device architecture under the config folder  as shown below:
 ![alt text](images/select-deployment-file.png "Select Edge Deployment Manifest file")
 This will result in the deployment of your edge module as shown below:
 
 ![alt text](images/request-processor-module-deployed.png "Request Processor Module deployed")
 
-8. Head over the Azure Portal and navigate to IoT Edge Device. This will show the newly created IoT Edge module as shown below:
+Step 8. Head over the Azure Portal and navigate to IoT Edge Device. This will show the newly created IoT Edge module as shown below:
 ![alt text](images/portal-view-edgemodule.png "Portal view")
 
-9. To view the newly created IoT Edge module on the device, open the device terminal and run the following command:
+Step 9. To view the newly created IoT Edge module on the device, open the device terminal and run the following command:
+
 ```bash
 $ sudo iotedge list
 ```
 
+
 This will show the newly created IoT Edge module as shown below:
 ![alt text](images/device-view.png "Device view")
-10. To view the log entries by the newly created IoT Edge module, run the following command on the device terminal:
+
+Step 10. To view the log entries by the newly created IoT Edge module, run the following command on the device terminal:
 
 ```bash
 $ sudo iotedge RequestProcessorModule
@@ -217,15 +230,19 @@ This will show the following result:
 
 ### Test
 
-1. Head over to Azure Portal, select the IoT Edge device, click the "RequestProcessorModule".
-2. On the IoT Edge Module Details page, select "Direct Method" link. This will open up "Direct Method" page that is used to test.
-3. Execute the test as shown below:
+Step 1. Head over to Azure Portal, select the IoT Edge device, click the "RequestProcessorModule".
+
+Step 2. On the IoT Edge Module Details page, select "Direct Method" link. This will open up "Direct Method" page that is used to test.
+
+Step 3. Execute the test as shown below:
 ![alt text](images/test-run.png "Test run")
-4. Head over to the device terminal and run the following command:
+
+Step 4. Head over to the device terminal and run the following command:
 
 ```bash
 $ sudo iotedge RequestProcessorModule
 ```
+
 This will show the following result:
 
 ![alt text](images/device-run.PNG "Device run")
