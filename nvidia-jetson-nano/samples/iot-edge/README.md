@@ -3,7 +3,7 @@
 
 ## Introduction
 
-In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jetson Nano device and send direct message to the newly created module and get its response. This tutorial can also be used on any Linux VM that Azure IoT Edge runtime supports. Just deploy the Azure IoT Edge runtime and use that VM as your device. 
+In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jetson Nano device and send direct message to the newly created module and get its response. This tutorial can also be used on any Linux VM that Azure IoT Edge runtime supports. Just deploy the Azure IoT Edge runtime and use that VM as your device.  
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jets
 3. **Docker Image repository**: This will be used to push the container images to. This tutorial requires access to already created Docker Image Repository with user name and password. Details on how to create Azure Container Registry can be found [here](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal)
 4. **VS Code**
 5. **Azure IoT Tools for VS Code**: This should configured and connected to your IoT Hub. More details can be found [here](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools)
-6. **Preconfigured Nvidia Jetson device** with IoT Edge runtime installed and configured to use Azure IoT Edge. More details can be found [here](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux)
+6. **Preconfigured Nvidia Jetson device** with IoT Edge runtime installed and configured to use Azure IoT Edge. More details can be found [here](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux). Or **Linux Virtual Machine** with Azure IoT Edge runtime installed and configured. More details can be found [here](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-ubuntuvm). In this case "Linux Virtual Machine" will act as a device.
 
 ## Steps
 
