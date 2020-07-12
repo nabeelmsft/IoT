@@ -7,46 +7,50 @@ In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jets
 
 ## Prerequisites
 
-1. **Azure IoT Hub**. Steps to create Azure IoT Hub can be found at: https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal
-2. **IoT Edge Device registered**. Details can be found at : https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device#register-in-the-azure-portal
-3. **Docker Image repository**: This will be used to push the container images to. This tutorial requires access to already created Docker Image Repository with user name and password. Details on how to create Azure Container Registry can be found at: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal
+1. **Azure IoT Hub**. Steps to create Azure IoT Hub can be found [here](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal)
+2. **IoT Edge Device registered**. Details can be found [here](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device#register-in-the-azure-portal)
+3. **Docker Image repository**: This will be used to push the container images to. This tutorial requires access to already created Docker Image Repository with user name and password. Details on how to create Azure Container Registry can be found [here](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal)
 4. **VS Code**
-5. **Azure IoT Tools for VS Code**: This should configured and connected to your IoT Hub. More details can be found at : https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools
-6. **Preconfigured Nvidia Jetson device** with IoT Edge runtime installed and configured to use Azure IoT Edge. More details can be found at: https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux
+5. **Azure IoT Tools for VS Code**: This should configured and connected to your IoT Hub. More details can be found [here](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.azure-iot-tools)
+6. **Preconfigured Nvidia Jetson device** with IoT Edge runtime installed and configured to use Azure IoT Edge. More details can be found [here](https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux)
 
 ## Steps
 
 ### Setting up the environment
 
-1. Create device identity
+1. Create device identity as shown below:
 ```bash
-az iot hub device-identity create --device-id myEdgeDevice --edge-enabled --hub-name {hub_name}
+az iot hub device-identity create --device-id [your-azure-iot-edge-device] --edge-enabled --hub-name [your-azure-iot-hub_name]
 ```
-1. On VS Code open command palette and enter command Azure IoT Edge: New IoT Edge solution.
-1. Choose the location for solution files.
-1. Choose name for solution. NvidiaJetsonEdgeSolution was selected for this tutorial.
-1. On "Select module template" question, choose "Python Module".
-1. Enter the name for "Python Module". For this tutorial "RequestProcessorModule" was chosen.
-1. For "Provide Docker image repository" question, choose a pre-existing image repository followed by name of your repository. Example: [your-docker-image-registry].azurecr.io/requestprocessormodule
+2. On VS Code open command palette and enter command Azure IoT Edge: New IoT Edge solution.
+3. Choose the location for solution files.
+4. Choose name for solution. NvidiaJetsonEdgeSolution was selected for this tutorial.
+5. On "Select module template" question, choose "Python Module".
+6. Enter the name for "Python Module". For this tutorial "RequestProcessorModule" was chosen.
+7. For "Provide Docker image repository" question, choose a pre-existing image repository followed by name of your repository. Example: [your-docker-image-registry].azurecr.io/requestprocessormodule
 After the above step, VS Code will open a new window with the following view:
 
 ![alt text](images/NvidiaJetsonEdgeSolutionView.PNG "Nvidia Jetson Edge Solution View")
 
-7. Open the .env file and enter the user name and password for your docker image registry as shown below:
+8. Open the .env file and enter the user name and password for your docker image registry as shown below:
 ![alt text](images/environment-settings.PNG ".env file content")
-8. On VS Code open the command palette and enter command "Azure IoT Edge: Set Default Target Platform for Edge Solution".
-9. Select "arm64v8" or your correct architecture. You can find out the architecture of your device by running the following command on the device:
+9. On VS Code open the command palette and enter command "Azure IoT Edge: Set Default Target Platform for Edge Solution".
+10. Select "arm64v8" or your correct architecture. You can find out the architecture of your device by running the following command on the device:
+
 ```bash
 $ uname -m
 aarch64
 ```
+
 In this case "aarch64" corresponds to "arm64v8".
 Once the architecture is set the settings.json file would look like:
 ![alt text](images/settings-json.PNG "settings.json file")
 
 ### Adding code
-1. Open main.py as shown below:
+
+1. Open main.py.
 2. Replace the code with the code mentioned below:
+
 ```python
 # Copyright (c) Microsoft. All rights reserved.
 # Licensed under the MIT license. See LICENSE file in the project root for
@@ -166,6 +170,7 @@ if __name__ == "__main__":
 
 
 ### Deploy
+
 1. Right click "deployment.template.json and select "Build and Push IoT Edge Solution" as shown below:
 ![alt text](images/build-and-push-iot-edge-solution.PNG "Build and Push IoT Edge Solution")
 2. The result of above step will be the creation of new folder called "config". The folder will contain a deployment json file corresponding to the default platform selected on step 8 under "Setting up the environment" section. For our Nvidia Jetson Nano device the architecture is arm64v8 as shown below:
@@ -194,23 +199,27 @@ This will result in the deployment of your edge module as shown below:
 ```bash
 $ sudo iotedge list
 ```
+
 This will show the newly created IoT Edge module as shown below:
 ![alt text](images/device-view.png "Device view")
-
 10. To view the log entries by the newly created IoT Edge module, run the following command on the device terminal:
+
 ```bash
 $ sudo iotedge RequestProcessorModule
 ```
+
 This will show the following result:
 
 ![alt text](images/device-log.png "Device log")
 
 ### Test
+
 1. Head over to Azure Portal, select the IoT Edge device, click the "RequestProcessorModule".
 2. On the IoT Edge Module Details page, select "Direct Method" link. This will open up "Direct Method" page that is used to test.
 3. Execute the test as shown below:
 ![alt text](images/test-run.png "Test run")
 4. Head over to the device terminal and run the following command:
+
 ```bash
 $ sudo iotedge RequestProcessorModule
 ```
@@ -218,6 +227,6 @@ This will show the following result:
 
 ![alt text](images/device-run.PNG "Device run")
 
-
 ### Conclusion
+
 In this tutorial we have seen how easy it is to create a new Azure IoT Edge module using python and deploy it using VS Code.
