@@ -1,7 +1,12 @@
-# Deploy IoT Edge Module on NVIDIA Jetson device and send direct messages to the module
+
+# Create and Deploy IoT Edge Module on NVIDIA Jetson device and send direct messages to the module
+
 ## Introduction
+
 In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jetson Nano device and send direct message to the newly created module and get its response.
+
 ## Prerequisites
+
 1. **Azure IoT Hub**. Steps to create Azure IoT Hub can be found at: https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal
 2. **IoT Edge Device registered**. Details can be found at : https://docs.microsoft.com/en-us/azure/iot-edge/how-to-register-device#register-in-the-azure-portal
 3. **Docker Image repository**: This will be used to push the container images to. This tutorial requires access to already created Docker Image Repository with user name and password. Details on how to create Azure Container Registry can be found at: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal
@@ -10,7 +15,9 @@ In this tutorial we will see how we can deploy an IoT Edge Module on NVidia Jets
 6. **Preconfigured Nvidia Jetson device** with IoT Edge runtime installed and configured to use Azure IoT Edge. More details can be found at: https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-linux
 
 ## Steps
+
 ### Setting up the environment
+
 1. Create device identity
 ```bash
 az iot hub device-identity create --device-id myEdgeDevice --edge-enabled --hub-name {hub_name}
