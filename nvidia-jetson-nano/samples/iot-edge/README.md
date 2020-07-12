@@ -59,7 +59,7 @@ Once the architecture is set the settings.json file would look like:
 
 Step 1. Open "main.py"
 
-Step2 . Replace the code with the code mentioned below:
+Step 2 . Replace the code with the code mentioned below:
 
 ```python
 # Copyright (c) Microsoft. All rights reserved.
@@ -201,6 +201,7 @@ Step 6. Select "Create Deployment for Single Device" menu item as shown below:
 
 Step 7. This will open a dialog window to asking to select Edge Deployment Manifest. Select the correct deployment manifest file that corresponds to your device architecture under the config folder  as shown below:
 ![alt text](images/select-deployment-file.png "Select Edge Deployment Manifest file")
+
 This will result in the deployment of your edge module as shown below:
 
 ![alt text](images/request-processor-module-deployed.png "Request Processor Module deployed")
@@ -235,6 +236,7 @@ Step 1. Head over to Azure Portal, select the IoT Edge device, click the "Reques
 Step 2. On the IoT Edge Module Details page, select "Direct Method" link. This will open up "Direct Method" page that is used to test.
 
 Step 3. Execute the test as shown below:
+
 ![alt text](images/test-run.png "Test run")
 
 Step 4. Head over to the device terminal and run the following command:
