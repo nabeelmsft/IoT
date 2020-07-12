@@ -1,5 +1,5 @@
 
-# Create and Deploy IoT Edge Module on NVIDIA Jetson device and send direct messages to the module
+# Create and Deploy Azure IoT Edge Module on NVIDIA Jetson device and send direct messages to the module
 
 ## Introduction
 
