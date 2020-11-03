@@ -43,10 +43,12 @@ async def main():
 	print(display)
 	print(camera)
 	# Fetch the connection string from an environment variable
-	# conn_str = os.getenv("IOTHUB_DEVICE_CONNECTION_STRING")
+	conn_str = os.getenv("IOTHUB_DEVICE_CONNECTION_STRING")
+	print("Connection string as: ")
+	print(conn_str)
 
-	# device_client = IoTHubDeviceClient.create_from_connection_string(conn_str)
-	# await device_client.connect()
+	device_client = IoTHubDeviceClient.create_from_connection_string(conn_str)
+	await device_client.connect()
 
 	counter = 1
 	# process frames until user exits
@@ -77,9 +79,10 @@ async def main():
 			message = "Found " + class_desc + " with confidence : " + str(confidence*100)
 			font.OverlayText(img, img.width, img.height, "Found {:s} at {:05.2f}% confidence".format(class_desc, confidence * 100), 775, 50, font.Blue, font.Gray40)
 			display.RenderOnce(img, img.width, img.height)
-			# await device_client.send_message(message)
+			await device_client.send_message(message)
 			print("Message sent for found object")
-	# await device_client.disconnect()
+			print(conn_str)
+	await device_client.disconnect()
 if __name__ == "__main__":
 	#asyncio.run(main())
 	loop = asyncio.get_event_loop()
