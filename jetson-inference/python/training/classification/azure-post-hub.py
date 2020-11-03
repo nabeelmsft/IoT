@@ -79,6 +79,8 @@ async def main():
 			message = "Found " + class_desc + " with confidence : " + str(confidence*100)
 			font.OverlayText(img, img.width, img.height, "Found {:s} at {:05.2f}% confidence".format(class_desc, confidence * 100), 775, 50, font.Blue, font.Gray40)
 			display.RenderOnce(img, img.width, img.height)
+			jetson.utils.saveImageRGBA('test.jpg',img, img.width,img.height)
+			print("Saved image")
 			await device_client.send_message(message)
 			print("Message sent for found object")
 			print(conn_str)
