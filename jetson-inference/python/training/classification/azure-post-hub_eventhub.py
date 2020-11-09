@@ -63,7 +63,7 @@ async def main():
 	counter = 1
 
 	# Code for listening to EventHub
-	# checkpoint_store = BlobCheckpointStore.from_connection_string(""
+	checkpoint_store = BlobCheckpointStore.from_connection_string("DefaultEndpointsProtocol=https;AccountName=nvidiamessagesstorage;AccountKey=Vj3EJ8mIPOP0MWUlT1w5cTEZ5BzVWie5EwFlvR7OASGBMLqO7WcWzBqa5R2htz3m9P/AfXfuyxQdCnaAMbST5w==;EndpointSuffix=core.windows.net", "jetson-nano-object-classification-events-container")
 
 	client=EventHubConsumerClient.from_connection_string("Endpoint=sb://nvidia-deepstream-events.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Ec+UPOfhGheLAgKzcwplC3BPoi0Se217DLQxKlE4ySI=", consumer_group="$Default",eventhub_name="jetson-nano-object-classification", checkpoint_store=checkpoint_store)
 
