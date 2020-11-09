@@ -12,6 +12,14 @@ from azure.iot.device.aio import IoTHubDeviceClient
 from azure.eventhub.aio import EventHubConsumerClient
 from azure.eventhub.extensions.checkpointstoreblobaio import BlobCheckpointStore
 
+async def on_event(partition_context, event):
+	# Print the event data.
+	print("Received the event:\"{}\" from the partition with ID: \"{}\"".format(event.body_as_str(encoding='UTF-8'), partition_context.partition_id))
+	
+	# Update the checkpoint so that teh program does not read the events that it has already read
+	await partition_context.update_checkpoint(event)
+	
+
 async def main():
 
 	# parse the command line
@@ -53,6 +61,12 @@ async def main():
 	await device_client.connect()
 
 	counter = 1
+
+	# Code for listening to EventHub
+	# checkpoint_store = BlobCheckpointStore.from_connection_string(""
+
+	client=EventHubConsumerClient.from_connection_string("Endpoint=sb://nvidia-deepstream-events.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Ec+UPOfhGheLAgKzcwplC3BPoi0Se217DLQxKlE4ySI=", consumer_group="$Default",eventhub_name="jetson-nano-object-classification", checkpoint_store=checkpoint_store)
+
 	# process frames until user exits
 	while True:
 		print('About to capture image')
