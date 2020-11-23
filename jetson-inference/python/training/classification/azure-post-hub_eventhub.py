@@ -15,6 +15,13 @@ from azure.eventhub.extensions.checkpointstoreblobaio import BlobCheckpointStore
 async def on_event(partition_context, event):
 	# Print the event data.
 	print("Received the event:\"{}\" from the partition with ID: \"{}\"".format(event.body_as_str(encoding='UTF-8'), partition_context.partition_id))
+
+	messageBody = event.body_as_str(encoding='UTF-8')
+	print("message body="+ messageBody)
+	messageArray = messageBody.split("|")
+	
+	for messageContent in messageArray:
+		print(messageContent)
 	
 	# Update the checkpoint so that teh program does not read the events that it has already read
 	await partition_context.update_checkpoint(event)
@@ -63,9 +70,9 @@ async def main():
 	counter = 1
 
 	# Code for listening to EventHub
-	checkpoint_store = BlobCheckpointStore.from_connection_string("DefaultEndpointsProtocol=https;AccountName=nvidiamessagesstorage;AccountKey=NW2FU519FIz7ivlRP3TPL2+GURREtWNWOofYE60Zd0bLJl0w32nOLwuNYCGzHKS9UfqO2D/NLVYbUl/pxg2myg==;EndpointSuffix=core.windows.net", "jetson-nano-object-classification-events-container")
+	checkpoint_store = BlobCheckpointStore.from_connection_string("", "jetson-nano-object-classification-events-container")
 
-	client=EventHubConsumerClient.from_connection_string("Endpoint=sb://nvidia-deepstream-events.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Ec+UPOfhGheLAgKzcwplC3BPoi0Se217DLQxKlE4ySI=", consumer_group="$Default",eventhub_name="jetson-nano-object-classification", checkpoint_store=checkpoint_store)
+	client=EventHubConsumerClient.from_connection_string("", consumer_group="$Default",eventhub_name="jetson-nano-object-classification", checkpoint_store=checkpoint_store)
 
 	async with client:
 		# Call the receive method
