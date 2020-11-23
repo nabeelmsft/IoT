@@ -63,16 +63,17 @@ async def main():
 	counter = 1
 
 	# Code for listening to EventHub
-	checkpoint_store = BlobCheckpointStore.from_connection_string("", "jetson-nano-object-classification-events-container")
+	checkpoint_store = BlobCheckpointStore.from_connection_string("DefaultEndpointsProtocol=https;AccountName=nvidiamessagesstorage;AccountKey=NW2FU519FIz7ivlRP3TPL2+GURREtWNWOofYE60Zd0bLJl0w32nOLwuNYCGzHKS9UfqO2D/NLVYbUl/pxg2myg==;EndpointSuffix=core.windows.net", "jetson-nano-object-classification-events-container")
 
-	client=EventHubConsumerClient.from_connection_string("", consumer_group="$Default",eventhub_name="jetson-nano-object-classification", checkpoint_store=checkpoint_store)
+	client=EventHubConsumerClient.from_connection_string("Endpoint=sb://nvidia-deepstream-events.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Ec+UPOfhGheLAgKzcwplC3BPoi0Se217DLQxKlE4ySI=", consumer_group="$Default",eventhub_name="jetson-nano-object-classification", checkpoint_store=checkpoint_store)
 
 	async with client:
 		# Call the receive method
 		await client.receive(on_event=on_event, starting_position="-1")
 
+
 	# process frames until user exits
-	while True:
+	while False:
 		print('About to capture image')
 		# capture the image
 		# img, width, height = camera.CaptureRGBA()
