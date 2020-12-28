@@ -15,6 +15,13 @@ from azure.storage.queue import (
 	BinaryBase64DecodePolicy
 )
 
+from azure.storage.blob import (
+	BlobServiceClient, 
+	BlobClient, 
+	ContainerClient, 
+	__version__
+)
+
 async def main():
 	
 	# Code for object detection
@@ -66,6 +73,10 @@ async def main():
 		print('Waiting for request queueMessages')
 
 		queue = QueueClient.from_connection_string(os.getenv("STORAGE_CONNECTION_STRING"), "jetson-nano-object-classification-requests")
+		
+		# Create the BlobServiceClient object which will be used to create a container client
+		blob_service_client = BlobServiceClient.from_connection_string(os.getenv("STORAGE_CONNECTION_STRING"))
+		container_name = "jetson-nano-object-classification-responses"
 
 		# Receive messages one-by-one
 		queueMessage = queue.receive_message()
@@ -74,12 +85,15 @@ async def main():
 			hasNewMessage = True
 			print('Valid message')
 			queueMessageArray = queueMessage.content.split("|")
+			requestContent = queueMessage.content
 			correlationId = queueMessageArray[0]
 			classForObjectDetection = queueMessageArray[1]
 			thresholdForObjectDetection = queueMessageArray[2]
 			queue.delete_message(queueMessage)
+			print('request content', requestContent)
 			print('classForObjectDetection value', classForObjectDetection)
 			print('Threshold value', thresholdForObjectDetection)
+			print('correlationId', correlationId)
 
 			while hasNewMessage:
 				print('About to capture image')
@@ -110,10 +124,24 @@ async def main():
 				# print out performance info
 				net.PrintProfilerTimes()
 				if class_desc == classForObjectDetection and (confidence*100) >= int(thresholdForObjectDetection):
-					message = "Found " + class_desc + " with confidence : " + str(confidence*100)
+					message = requestContent + "|" + str(confidence*100)
 					font.OverlayText(img, img.width, img.height, "Found {:s} at {:05.2f}% confidence".format(class_desc, confidence * 100), 775, 50, font.Blue, font.Gray40)
 					display.RenderOnce(img, img.width, img.height)
-					jetson.utils.saveImageRGBA('test.jpg',img, img.width,img.height)
+					savedFile='test.jpg'
+					jetson.utils.saveImageRGBA(savedFile,img, img.width,img.height)
+
+					# Create a blob client using the local file name as the name for the blob
+					folderMark = "/"
+					uploadPath = correlationId + folderMark + savedFile
+					blob_client = blob_service_client.get_blob_client(container=container_name, blob=uploadPath)
+
+					print("\nUploading to Azure Storage as blob:\n\t" + savedFile)
+
+					# Upload the created file
+					with open(savedFile, "rb") as data:
+					    blob_client.upload_blob(data)
+
+
 					print("Saved image")
 					await device_client.send_message(message)
 					print("Message sent for found object")
