@@ -22,13 +22,11 @@ async def on_event(partition_context, event):
 	
 	for messageContent in messageArray:
 		print(messageContent)
-	
-	# Update the checkpoint so that teh program does not read the events that it has already read
-	await partition_context.update_checkpoint(event)
-	
+	classForObjectDetection = messageArray[1]
+	thresholdForObjectDetection=messageArray[2]
+	print("Class and threshhold" + classForObjectDetection + thresholdForObjectDetection)
 
-async def main():
-
+	# Code for object detection
 	# parse the command line
 	parser = argparse.ArgumentParser(description="Classifying an object from a live camera feed and once successfully classified a message is sent to Azure IoT Hub", 
 						   formatter_class=argparse.RawTextHelpFormatter, epilog=jetson.inference.imageNet.Usage())
@@ -68,16 +66,7 @@ async def main():
 	await device_client.connect()
 
 	counter = 1
-
-	# Code for listening to EventHub
-	checkpoint_store = BlobCheckpointStore.from_connection_string("", "jetson-nano-object-classification-events-container")
-
-	client=EventHubConsumerClient.from_connection_string("", consumer_group="$Default",eventhub_name="jetson-nano-object-classification", checkpoint_store=checkpoint_store)
-
-	async with client:
-		# Call the receive method
-		await client.receive(on_event=on_event, starting_position="-1")
-
+	stillLooking = True
 
 	# process frames until user exits
 	while False:
@@ -88,22 +77,27 @@ async def main():
 
 		# classify the image
 		class_idx, confidence = net.Classify(img)
+		print('Classified image')
 
 		# find the object description
 		class_desc = net.GetClassDesc(class_idx)
+		print('Got class description')
 
 		# overlay the result on the image	
 		font.OverlayText(img, img.width, img.height, "{:05.2f}% {:s}".format(confidence * 100, class_desc), 15, 50, font.Green, font.Gray40)
+		print('Set font overlay')
 
 		# render the image
 		display.RenderOnce(img, img.width, img.height)
+		print('Rendered once')
 
 		# update the title bar
 		display.SetTitle("{:s} | Network {:.0f} FPS | Looking for {:s}".format(net.GetNetworkName(), net.GetNetworkFPS(), opt.classNameForTargetObject))
+		print('Display is set')
 
 		# print out performance info
 		net.PrintProfilerTimes()
-		if class_desc == opt.classNameForTargetObject and (confidence*100) >= opt.detectionThreshold:
+		if class_desc == classForObjectDetection and (confidence*100) >= int(thresholdForObjectDetection):
 			message = "Found " + class_desc + " with confidence : " + str(confidence*100)
 			font.OverlayText(img, img.width, img.height, "Found {:s} at {:05.2f}% confidence".format(class_desc, confidence * 100), 775, 50, font.Blue, font.Gray40)
 			display.RenderOnce(img, img.width, img.height)
@@ -112,7 +106,31 @@ async def main():
 			await device_client.send_message(message)
 			print("Message sent for found object")
 			print(conn_str)
+			stillLooking = False
+			#del input
+			#del display
+			#del camera
+			
 	await device_client.disconnect()
+
+
+	# Update the checkpoint so that the program does not read the events that it has already read
+	await partition_context.update_checkpoint(event)
+	
+
+async def main():
+	# Code for listening to EventHub
+	checkpoint_store = BlobCheckpointStore.from_connection_string("", "jetson-nano-object-classification-events-container")
+
+	client=EventHubConsumerClient.from_connection_string("", consumer_group="$Default",eventhub_name="jetson-nano-object-classification", checkpoint_store=checkpoint_store)
+	print('Waiting for request events')
+	async with client:
+		# Call the receive method
+		await client.receive(on_event=on_event, starting_position="-1")
+
+
+
+
 if __name__ == "__main__":
 	#asyncio.run(main())
 	loop = asyncio.get_event_loop()
