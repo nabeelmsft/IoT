@@ -1,4 +1,4 @@
-# Two Factor authentication levaraging AI on the edge using Jetson Nano and Azure IoT
+# Two Factor authentication leveraging AI on the edge using Jetson Nano and Azure IoT
 ## Introduction
 ## Architecture
 ## AI Model
