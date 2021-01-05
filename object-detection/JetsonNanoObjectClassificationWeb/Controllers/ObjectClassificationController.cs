@@ -24,7 +24,7 @@
             storageConnectionString = this._configuration.GetValue<string>("StorageConnectionString");
         }
 
-        public IActionResult Index(string requestId)
+        public IActionResult Index(string requestId, string className)
         {
             Guid requestGuid = new Guid(requestId);
             string imageUri = string.Empty;
@@ -41,6 +41,7 @@
             {
                 ImageUri = new Uri(imageUri),
                 RequestId = requestGuid,
+                ClassName = className
             };
 
             return View(objectClassificationModel);

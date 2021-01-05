@@ -27,7 +27,7 @@
                     .catch(error => console.log('Unable to get items.', error));
             }
             else {
-                window.location.href = "@Url.Action("Index","ObjectClassification", new { requestId = Model.RequestId.ToString() })";
+                window.location.href = "@Url.Action("Index","ObjectClassification", new { requestId = Model.RequestId.ToString(), className = Model.ClassName })";
             }
         }
 
@@ -53,28 +53,9 @@
 
 
     var hasImageUploaded = "";
-        @*if (hasImageUploaded === "") {
-        var xhr = new XMLHttpRequest();
-        xhr.withCredentials = true;
 
-        xhr.addEventListener("readystatechange", function () {
-            console.log(this.readyState);
-            console.log(this.responseText);
-            if (this.readyState === 4 ) {
-                console.log(this.responseText);
-                hasImageUploaded = this.responseText;
-                window.location.href = "@Url.Action("Index","ObjectClassification", new { requestId = Model.RequestId.ToString() })";
-            }
-        });
-
-        xhr.open("GET", "https://localhost:44380/objectclassification/@Model.RequestId.ToString()/hasimageuploaded");
-
-        xhr.send();
-        alert(hasImageUploaded);
-        sleep(5000);
-    }*@
     if (hasImageUploaded !== "") {
-        window.location.href = "@Url.Action("Index","ObjectClassification", new { requestId = Model.RequestId.ToString() })";
+        window.location.href = "@Url.Action("Index","ObjectClassification", new { requestId = Model.RequestId.ToString(), className = Model.ClassName })";
     }
     else {
         var elem = document.createElement("div");
