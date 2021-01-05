@@ -1,0 +1,95 @@
+﻿@model JetsonNanoObjectClassificationWeb.Models.ObjectClassificationModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@if(Model != null)
+{
+    <input id="imageUriId" type="text" maxlength="50" class="imageUri-indicator" value="" />
+    <script type="text/javascript">
+    function sleep(milliseconds) {
+        const date = Date.now();
+        let currentDate = null;
+        do {
+            currentDate = Date.now();
+        } while (currentDate - date < milliseconds);
+    }
+
+    function _getData(data) {
+            console.log("Data: ", data);
+            var inputImageUri = document.getElementById("imageUriId");
+            inputImageUri.value = data;
+            console.log("The value of data is: ", data);
+            if (data === "") {
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => _getData(data))
+                    .catch(error => console.log('Unable to get items.', error));
+            }
+            else {
+                window.location.href = "@Url.Action("Index","ObjectClassification", new { requestId = Model.RequestId.ToString() })";
+            }
+        }
+
+        var elem = document.createElement("div");
+        elem.className = "waiting-area";
+        if (document.body != null) {
+            document.body.appendChild(elem);
+        }
+
+        var imageUriValue = document.getElementById("imageUriId").value;
+        console.log("imageUriValue", imageUriValue);
+        var url = "https://localhost:44380/objectclassification/@Model.RequestId.ToString()/hasimageuploaded";
+        console.log("1- in the while loop with imageUriValue", imageUriValue);
+        imageUriValue = document.getElementById("imageUriId").value;
+
+        setTimeout(function () {
+            fetch(url)
+                .then(response => response.json())
+                .then(data => _getData(data))
+                .catch(error => console.log('Unable to get items.', error));
+        }, 3000);
+
+
+
+    var hasImageUploaded = "";
+        @*if (hasImageUploaded === "") {
+        var xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        xhr.addEventListener("readystatechange", function () {
+            console.log(this.readyState);
+            console.log(this.responseText);
+            if (this.readyState === 4 ) {
+                console.log(this.responseText);
+                hasImageUploaded = this.responseText;
+                window.location.href = "@Url.Action("Index","ObjectClassification", new { requestId = Model.RequestId.ToString() })";
+            }
+        });
+
+        xhr.open("GET", "https://localhost:44380/objectclassification/@Model.RequestId.ToString()/hasimageuploaded");
+
+        xhr.send();
+        alert(hasImageUploaded);
+        sleep(5000);
+    }*@
+    if (hasImageUploaded !== "") {
+        window.location.href = "@Url.Action("Index","ObjectClassification", new { requestId = Model.RequestId.ToString() })";
+    }
+    else {
+        var elem = document.createElement("div");
+        //elem.style = "width:100px;height:100px;position:relative;background:#FF0000;";
+        elem.className = "waiting-area";
+        //elem.innerText = "Waiting ..."
+        if (document.body != null) {
+            document.body.appendChild(elem);
+        }
+    }
+    </script>
+}
+else
+{
+    <p>Invalid user name or password</p>
+}
+
+
