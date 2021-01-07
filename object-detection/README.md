@@ -198,6 +198,6 @@ In this post we have seen how simple it is for running  AI on edge using Nvidia 
 ## Appendix - AI Model
 The custom AI model that we have for this post is created using three class of images. 
 
-Following is the view of the custom AI model:
+Following is the view of the custom AI model created using https://netron.app/:
 ![AI Model](https://github.com/nabeelmsft/IoT/blob/master/object-detection/assets/resnet18.onnx.png?raw=true "AI Model")
 
