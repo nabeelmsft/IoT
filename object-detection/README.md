@@ -5,6 +5,17 @@ The goal of this post is to show how we can use the Jetson Nano device running A
 ![Architecture](https://github.com/nabeelmsft/IoT/blob/master/object-detection/visio/Architecture.png?raw=true "Architecture")
 
 ## Running AI on the Edge
+
+### Device pre-requisites
+1. Custom pre-training model deployed on the device. 
+1. Location path to the custom model file (.onnx file). This information is presented as --model parameter to the command mentioned in Steps section.
+1. Location path to the classification text file (labels.txt). This information is presented as --labels parameter to the command mentioned in Steps section.
+1. Class name of the object that is target object that needs to be detected. This is presented as --classNameForTargetObject.
+1. Azure IoT Hub libraries for Python. Install the azure-iot-device package for IoTHubDeviceClient.
+```bash
+pip install azure-iot-device
+```
+### Code for running AI on the Edge
 Jetson Nano device is running detect-object.py
 https://github.com/nabeelmsft/IoT/blob/master/object-detection/detect-object.py
 
@@ -198,6 +209,6 @@ In this post we have seen how simple it is for running  AI on edge using Nvidia 
 ## Appendix - AI Model
 The custom AI model that we have for this post is created using three class of images. 
 
-Following is the view of the custom AI model created using https://netron.app/:
+Following is the view of the custom AI model created using https://netron.app
 ![AI Model](https://github.com/nabeelmsft/IoT/blob/master/object-detection/assets/resnet18.onnx.png?raw=true "AI Model")
 
