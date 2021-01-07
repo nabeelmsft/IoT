@@ -48,7 +48,7 @@
             {
                 ClassName = userName,
                 RequestId = Guid.NewGuid(),
-                ThresholdPercentage = 80
+                ThresholdPercentage = 70
             };
 
             _ = QueueMessageAsync(objectClassificationModel, storageConnectionString);

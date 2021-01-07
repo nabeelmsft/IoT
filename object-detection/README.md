@@ -190,7 +190,7 @@ Detail view:
 1. Once the second factor is completed, the Jetson Nano device posts captured image for second factor to Azure Storage Blob as shown below:
 ![Azure Blob storage view](https://github.com/nabeelmsft/IoT/blob/master/object-detection/assets/storage-view.PNG?raw=true "Azure Blob storage view")
 1. The web interface shows the captured image completing the flow as shown below:
-![Second factor](https://github.com/nabeelmsft/IoT/blob/master/object-detection/assets/hulk-detected-image.PNG?raw=true "Second factor")
+![Second factor](https://github.com/nabeelmsft/IoT/blob/master/object-detection/assets/gil-detected-image.PNG?raw=true "Second factor")
 
 
 ## Conclusion
