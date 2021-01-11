@@ -71,6 +71,8 @@ async def main():
 			message = "Found " + class_desc + " with confidence : " + str(confidence*100)
 			await device_client.send_message(message)
 			print("Message sent for found object")
+			jetson.utils.saveImageRGBA("test.png", img, width, height)
+            print("picture was saved")
 	await device_client.disconnect()
 if __name__ == "__main__":
 	#asyncio.run(main())

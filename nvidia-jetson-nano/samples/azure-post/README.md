@@ -30,6 +30,10 @@ Once the IoT Hub is setup, you can proceed with the steps mentioned in the follo
 1. Location path to the custom model file (.onnx file). This information is presented as --model parameter to the command mentioned in Steps section.
 1. Location path to the classification text file (labels.txt). This information is presented as --labels parameter to the command mentioned in Steps section.
 1. Class name of the object that is target object that needs to be detected. This is presented as --classNameForTargetObject.
+1. Azure IoT Hub libraries for Python. Install the azure-iot-device package for IoTHubDeviceClient.
+```bash
+pip install azure-iot-device
+```
 # Steps
 1. Clone the source code from repository or download the folder for Azure-Post. For example 'IoT' folder.
 ```bash
@@ -38,7 +42,7 @@ Once the IoT Hub is setup, you can proceed with the steps mentioned in the follo
 1. Open the Jetson-nano terminal window.
 1. Navigate to the 'azureposts' folder as shown below:
 ```bash
-~/IoT/nvidia-jetson-nano/samples/azureposts
+~/IoT/nvidia-jetson-nano/samples/azure-post
 ```
 1. Create  IOTHUB_DEVICE_CONNECTION_STRING variable that was saved as part of Azure IoT Hub Setup prerequisite as shown below:
 ```bash
