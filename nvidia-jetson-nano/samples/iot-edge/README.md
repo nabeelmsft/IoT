@@ -222,7 +222,7 @@ This will show the newly created IoT Edge module as shown below:
 Step 10. To view the log entries by the newly created IoT Edge module, run the following command on the device terminal:
 
 ```bash
-$ sudo iotedge RequestProcessorModule
+$ sudo iotedge logs RequestProcessorModule
 ```
 
 This will show the following result:
