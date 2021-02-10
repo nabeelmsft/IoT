@@ -18,9 +18,28 @@ from azure.storage.queue import (
 from azure.storage.blob import (
 	BlobServiceClient, 
 	BlobClient, 
-	ContainerClient,
-	__version__
+	ContainerClient
 )
+
+# A helper class to support async blob actions.
+class BlobHelperAsync(object):
+	async def block_blob_upload_async(self, upload_path, savedFile):
+		# Instantiate a new BlobServiceClient using a connection string
+		from azure.storage.blob.aio import BlobServiceClient
+		blob_service_client = BlobServiceClient.from_connection_string(os.getenv("STORAGE_CONNECTION_STRING"))
+		container_name = "jetson-nano-object-classification-responses"
+
+		async with blob_service_client:
+			# Instantiate a new ContainerClient
+			container_client = blob_service_client.get_container_client(container_name)
+
+		        # Instantiate a new BlobClient
+			blob_client = container_client.get_blob_client(blob=upload_path)
+
+			# Upload content to block blob
+			with open(savedFile, "rb") as data:
+				await blob_client.upload_blob(data)
+	        	# [END upload_a_blob]
 
 async def main():
 	
@@ -45,15 +64,13 @@ async def main():
 
 	# load the recognition network
 	net = jetson.inference.imageNet(opt.network, sys.argv)
-	f'Loaded network'
+
 	# create the camera and display
 	font = jetson.utils.cudaFont()
 	camera = jetson.utils.gstCamera(opt.width, opt.height, opt.camera)
 	display = jetson.utils.glDisplay()
 	input = jetson.utils.videoSource(opt.input_URI, argv=sys.argv)
-	f'Loaded display'
-	f'{display}'
-	f'{camera}'
+
 	# Fetch the connection string from an environment variable
 	conn_str = os.getenv("IOTHUB_DEVICE_CONNECTION_STRING")
 
@@ -70,52 +87,37 @@ async def main():
 
 		queue = QueueClient.from_connection_string(os.getenv("STORAGE_CONNECTION_STRING"), "jetson-nano-object-classification-requests")
 		
-		# Create the BlobServiceClient object which will be used to create a container client
-		blob_service_client = BlobServiceClient.from_connection_string(os.getenv("STORAGE_CONNECTION_STRING"))
-		container_name = "jetson-nano-object-classification-responses"
-
 		# Receive messages one-by-one
 		queueMessage = queue.receive_message()
 		print(queueMessage)
 		if queueMessage:
-			hasNewMessage = True
-			print("Valid message")
+			has_new_message = True
 			queueMessageArray = queueMessage.content.split("|")
 			requestContent = queueMessage.content
 			correlationId = queueMessageArray[0]
 			classForObjectDetection = queueMessageArray[1]
 			thresholdForObjectDetection = int(queueMessageArray[2])
 			queue.delete_message(queueMessage)
-			print("request content = ", requestContent)
-			print("classForObjectDetection value = ", classForObjectDetection)
-			print("Threshold value = ", thresholdForObjectDetection)
-			print("correlationId = ", correlationId)
 
-			while hasNewMessage:
-				print('About to capture image')
+			while has_new_message:
 				# capture the image
 				# img, width, height = camera.CaptureRGBA()
 				img = input.Capture()
 
 				# classify the image
 				class_idx, confidence = net.Classify(img)
-				print('Classified image')
 
 				# find the object description
 				class_desc = net.GetClassDesc(class_idx)
-				print('Got class description')
 
 				# overlay the result on the image	
 				font.OverlayText(img, img.width, img.height, "{:05.2f}% {:s}".format(confidence * 100, class_desc), 15, 50, font.Green, font.Gray40)
-				print('Set font overlay')
 
 				# render the image
 				display.RenderOnce(img, img.width, img.height)
-				print('Rendered once')
 
 				# update the title bar
 				display.SetTitle("{:s} | Network {:.0f} FPS | Looking for {:s}".format(net.GetNetworkName(), net.GetNetworkFPS(), opt.classNameForTargetObject))
-				print('Display is set')
 
 				# print out performance info
 				net.PrintProfilerTimes()
@@ -126,23 +128,20 @@ async def main():
 					savedFile='imageWithDetection.jpg'
 					jetson.utils.saveImageRGBA(savedFile,img, img.width,img.height)
 
+					# Create the BlobServiceClient object which will be used to create a container client
+					blob_service_client = BlobServiceClient.from_connection_string(os.getenv("STORAGE_CONNECTION_STRING"))
+					container_name = "jetson-nano-object-classification-responses"
+
 					# Create a blob client using the local file name as the name for the blob
 					folderMark = "/"
 					upload_path = folderMark.join([correlationId, savedFile])
-					blob_client = blob_service_client.get_blob_client(container=container_name, blob=upload_path)
+					
+					blob_helper = BlobHelperAsync()
+					await blob_helper.block_blob_upload_async(upload_path, savedFile)
 
-					print("\nUploading to Azure Storage as blob:\n\t" + savedFile)
-
-					# Upload the created file
-					with open(savedFile, "rb") as data:
-					    blob_client.upload_blob(data)
-
-
-					print("Saved image")
 					await device_client.send_message(message)
-					print("Message sent for found object")
 					still_looking = True
-					hasNewMessage = False
+					has_new_message = False
 				
 			await device_client.disconnect()
 
