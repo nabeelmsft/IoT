@@ -18,7 +18,8 @@ from azure.storage.queue import (
 from azure.storage.blob import (
 	BlobServiceClient, 
 	BlobClient, 
-	ContainerClient
+	ContainerClient,
+	__version__
 )
 
 async def main():
@@ -61,12 +62,11 @@ async def main():
 
 	counter = 1
 	still_looking = True
-
 	# process frames until user exits
 	while still_looking:
 		# Code for listening to Storage queue
 
-		f'Waiting for request queueMessages'
+		print("Waiting for request queueMessages")
 
 		queue = QueueClient.from_connection_string(os.getenv("STORAGE_CONNECTION_STRING"), "jetson-nano-object-classification-requests")
 		
@@ -76,54 +76,54 @@ async def main():
 
 		# Receive messages one-by-one
 		queueMessage = queue.receive_message()
-		f'{queueMessage}'
+		print(queueMessage)
 		if queueMessage:
 			hasNewMessage = True
-			f'Valid message'
+			print("Valid message")
 			queueMessageArray = queueMessage.content.split("|")
 			requestContent = queueMessage.content
 			correlationId = queueMessageArray[0]
 			classForObjectDetection = queueMessageArray[1]
-			thresholdForObjectDetection = queueMessageArray[2]
+			thresholdForObjectDetection = int(queueMessageArray[2])
 			queue.delete_message(queueMessage)
-			f"request content = {requestContent}"
-			f"classForObjectDetection value = {classForObjectDetection}"
-			f"Threshold value = {thresholdForObjectDetection}"
-			f"correlationId = {correlationId}"
+			print("request content = ", requestContent)
+			print("classForObjectDetection value = ", classForObjectDetection)
+			print("Threshold value = ", thresholdForObjectDetection)
+			print("correlationId = ", correlationId)
 
 			while hasNewMessage:
-				f'About to capture image'
+				print('About to capture image')
 				# capture the image
 				# img, width, height = camera.CaptureRGBA()
 				img = input.Capture()
 
 				# classify the image
 				class_idx, confidence = net.Classify(img)
-				f'Classified image'
+				print('Classified image')
 
 				# find the object description
 				class_desc = net.GetClassDesc(class_idx)
-				f'Got class description'
+				print('Got class description')
 
 				# overlay the result on the image	
 				font.OverlayText(img, img.width, img.height, "{:05.2f}% {:s}".format(confidence * 100, class_desc), 15, 50, font.Green, font.Gray40)
-				f'Set font overlay'
+				print('Set font overlay')
 
 				# render the image
 				display.RenderOnce(img, img.width, img.height)
-				f'Rendered once'
+				print('Rendered once')
 
 				# update the title bar
 				display.SetTitle("{:s} | Network {:.0f} FPS | Looking for {:s}".format(net.GetNetworkName(), net.GetNetworkFPS(), opt.classNameForTargetObject))
-				f'Display is set'
+				print('Display is set')
 
 				# print out performance info
 				net.PrintProfilerTimes()
-				if class_desc == classForObjectDetection and (confidence*100) >= int(thresholdForObjectDetection):
+				if class_desc == classForObjectDetection and (confidence*100) >= thresholdForObjectDetection:
 					message = requestContent + "|" + str(confidence*100)
 					font.OverlayText(img, img.width, img.height, "Found {:s} at {:05.2f}% confidence".format(class_desc, confidence * 100), 775, 50, font.Blue, font.Gray40)
 					display.RenderOnce(img, img.width, img.height)
-					savedFile='test.jpg'
+					savedFile='imageWithDetection.jpg'
 					jetson.utils.saveImageRGBA(savedFile,img, img.width,img.height)
 
 					# Create a blob client using the local file name as the name for the blob
@@ -138,9 +138,9 @@ async def main():
 					    blob_client.upload_blob(data)
 
 
-					f"Saved image"
+					print("Saved image")
 					await device_client.send_message(message)
-					f"Message sent for found object"
+					print("Message sent for found object")
 					still_looking = True
 					hasNewMessage = False
 				
@@ -151,3 +151,4 @@ if __name__ == "__main__":
 	loop = asyncio.get_event_loop()
 	loop.run_until_complete(main())
 	loop.close()
+

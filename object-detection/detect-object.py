@@ -127,7 +127,7 @@ async def main():
 					message = requestContent + "|" + str(confidence*100)
 					font.OverlayText(img, img.width, img.height, "Found {:s} at {:05.2f}% confidence".format(class_desc, confidence * 100), 775, 50, font.Blue, font.Gray40)
 					display.RenderOnce(img, img.width, img.height)
-					savedFile='test.jpg'
+					savedFile='imageWithDetection.jpg'
 					jetson.utils.saveImageRGBA(savedFile,img, img.width,img.height)
 
 					# Create a blob client using the local file name as the name for the blob
