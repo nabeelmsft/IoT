@@ -120,7 +120,7 @@ async def main():
     while still_looking:
         # Code for listening to Storage queue
 
-        print("Waiting for request queueMessages")
+        print("Waiting for request queue_messages")
 
         queue = QueueClient.from_connection_string(
             os.getenv("STORAGE_CONNECTION_STRING"),
@@ -128,16 +128,16 @@ async def main():
         )
 
         # Receive messages one-by-one
-        queueMessage = queue.receive_message()
-        print(queueMessage)
-        if queueMessage:
+        queue_message = queue.receive_message()
+        print(queue_message)
+        if queue_message:
             has_new_message = True
-            queueMessageArray = queueMessage.content.split("|")
-            requestContent = queueMessage.content
-            correlationId = queueMessageArray[0]
-            classForObjectDetection = queueMessageArray[1]
-            thresholdForObjectDetection = int(queueMessageArray[2])
-            queue.delete_message(queueMessage)
+            queue_message_array = queue_message.content.split("|")
+            requestContent = queue_message.content
+            correlationId = queue_message_array[0]
+            classForObjectDetection = queue_message_array[1]
+            thresholdForObjectDetection = int(queue_message_array[2])
+            queue.delete_message(queue_message)
 
             while has_new_message:
                 # capture the image
