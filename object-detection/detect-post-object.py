@@ -15,14 +15,11 @@ from azure.storage.queue import (
     BinaryBase64DecodePolicy,
 )
 
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+from azure.storage.blob.aio import BlobServiceClient, BlobClient, ContainerClient
 
 # A helper class to support async blob actions.
 class BlobHelperAsync(object):
     async def block_blob_upload_async(self, upload_path, savedFile):
-        # Instantiate a new BlobServiceClient using a connection string
-        from azure.storage.blob.aio import BlobServiceClient
-
         blob_service_client = BlobServiceClient.from_connection_string(
             os.getenv("STORAGE_CONNECTION_STRING")
         )
