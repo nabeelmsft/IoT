@@ -133,10 +133,10 @@ async def main():
         if queue_message:
             has_new_message = True
             queue_message_array = queue_message.content.split("|")
-            requestContent = queue_message.content
-            correlationId = queue_message_array[0]
-            classForObjectDetection = queue_message_array[1]
-            thresholdForObjectDetection = int(queue_message_array[2])
+            request_content = queue_message.content
+            correlation_id = queue_message_array[0]
+            class_for_object_detection = queue_message_array[1]
+            threshold_for_object_detection = int(queue_message_array[2])
 
             while has_new_message:
                 # capture the image
@@ -176,10 +176,10 @@ async def main():
                 # print out performance info
                 net.PrintProfilerTimes()
                 if (
-                    class_desc == classForObjectDetection
-                    and (confidence * 100) >= thresholdForObjectDetection
+                    class_desc == class_for_object_detection
+                    and (confidence * 100) >= threshold_for_object_detection
                 ):
-                    message = requestContent + "|" + str(confidence * 100)
+                    message = request_content + "|" + str(confidence * 100)
                     font.OverlayText(
                         img,
                         img.width,
@@ -204,7 +204,7 @@ async def main():
 
                     # Create a blob client using the local file name as the name for the blob
                     folderMark = "/"
-                    upload_path = folderMark.join([correlationId, savedFile])
+                    upload_path = folderMark.join([correlation_id, savedFile])
 
                     # blob_helper = StorageHelperAsync()
                     await storage_helper.block_blob_upload_async(upload_path, savedFile)
