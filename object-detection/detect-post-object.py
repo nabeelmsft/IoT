@@ -13,7 +13,7 @@ from azure.storage.queue.aio import QueueClient
 from azure.storage.blob.aio import BlobServiceClient, BlobClient, ContainerClient
 
 # A helper class to support async blob and queue actions.
-class StorageHelperAsync(object):
+class StorageHelperAsync:
     async def block_blob_upload_async(self, upload_path, savedFile):
         blob_service_client = BlobServiceClient.from_connection_string(
             os.getenv("STORAGE_CONNECTION_STRING")
