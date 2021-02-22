@@ -34,12 +34,12 @@
         var elem = document.createElement("div");
         elem.className = "waiting-area";
         if (document.body != null) {
-            document.body.appendChild(elem);
+            //document.body.appendChild(elem);
         }
 
         var imageUriValue = document.getElementById("imageUriId").value;
         console.log("imageUriValue", imageUriValue);
-        var url = "https://localhost:44380/objectclassification/@Model.RequestId.ToString()/hasimageuploaded";
+        var url = location.origin + "/objectclassification/@Model.RequestId.ToString()/hasimageuploaded";
         console.log("1- in the while loop with imageUriValue", imageUriValue);
         imageUriValue = document.getElementById("imageUriId").value;
 

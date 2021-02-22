@@ -39,7 +39,9 @@
                 password = Request.Form["password"];
             }
 
-            if(!userName.Equals(password, StringComparison.InvariantCultureIgnoreCase))
+            // Simulation of first factor authentication presented here.
+            // For real world example visit https://docs.microsoft.com/azure/app-service/overview-authentication-authorization
+            if (!userName.Equals(password, StringComparison.InvariantCultureIgnoreCase))
             {
                 return View(null);
             }

@@ -57,46 +57,13 @@
           }
         },
         "modules": {
-          "RequestProcessorModule": {
+          "ObjectDetectionDeviceModule": {
             "version": "1.0",
             "type": "docker",
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "${MODULES.RequestProcessorModule.debug}",
-              "createOptions": {
-                "ExposedPorts": {
-                  "5678/tcp": {}
-                },
-                "HostConfig": {
-                  "PortBindings": {
-                    "5678/tcp": [
-                      {
-                        "HostPort": "5678"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          "SimulatedTemperatureSensor": {
-            "version": "1.0",
-            "type": "docker",
-            "status": "running",
-            "restartPolicy": "always",
-            "settings": {
-              "image": "mcr.microsoft.com/azureiotedge-simulated-temperature-sensor:1.0",
-              "createOptions": {}
-            }
-          },
-          "azureblobstorageoniotedge": {
-            "version": "1.0",
-            "type": "docker",
-            "status": "running",
-            "restartPolicy": "always",
-            "settings": {
-              "image": "mcr.microsoft.com/azure-blob-storage:latest",
+              "image": "${MODULES.ObjectDetectionDeviceModule}",
               "createOptions": {}
             }
           }
@@ -107,9 +74,8 @@
       "properties.desired": {
         "schemaVersion": "1.0",
         "routes": {
-          "RequestProcessorModuleToIoTHub": "FROM /messages/modules/RequestProcessorModule/outputs/* INTO $upstream",
-          "sensorToRequestProcessorModule": "FROM /messages/modules/SimulatedTemperatureSensor/outputs/temperatureOutput INTO BrokeredEndpoint(\"/modules/RequestProcessorModule/inputs/input1\")",
-          "azureblobstorageoniotedgeToIoTHub": "FROM /messages/modules/azureblobstorageoniotedge/outputs/* INTO $upstream"
+          "ObjectDetectionDeviceModuleToIoTHub": "FROM /messages/modules/ObjectDetectionDeviceModule/outputs/* INTO $upstream",
+          "sensorToObjectDetectionDeviceModule": "FROM /messages/modules/SimulatedTemperatureSensor/outputs/temperatureOutput INTO BrokeredEndpoint(\"/modules/ObjectDetectionDeviceModule/inputs/input1\")"
         },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200

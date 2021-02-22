@@ -67,14 +67,31 @@
               "createOptions": {}
             }
           },
-          "SimulatedTemperatureSensor": {
+          "azureblobstorageoniotedge": {
             "version": "1.0",
             "type": "docker",
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "mcr.microsoft.com/azureiotedge-simulated-temperature-sensor:1.0",
-              "createOptions": {}
+              "image": "mcr.microsoft.com/azure-blob-storage:latest",
+              "createOptions": {
+                "Env": [
+                  "LOCAL_STORAGE_ACCOUNT_NAME=metadatastore",
+                  "LOCAL_STORAGE_ACCOUNT_KEY=iYMKd+VQXJDxNwGInLuzl9tA5oUlxTcZnIVhfcGoUnRkXgGl7CROA7fYjOvXd+qFulujnhqjsdtYZpfNHqAVPg=="
+                ],
+                "HostConfig": {
+                  "Binds": [
+                    "blobvolume:/blobroot"
+                  ],
+                  "PortBindings": {
+                    "11002/tcp": [
+                      {
+                        "HostPort": "11002"
+                      }
+                    ]
+                  }
+                }
+              }
             }
           }
         }
@@ -85,10 +102,25 @@
         "schemaVersion": "1.0",
         "routes": {
           "RequestProcessorModuleToIoTHub": "FROM /messages/modules/RequestProcessorModule/outputs/* INTO $upstream",
-          "sensorToRequestProcessorModule": "FROM /messages/modules/SimulatedTemperatureSensor/outputs/temperatureOutput INTO BrokeredEndpoint(\"/modules/RequestProcessorModule/inputs/input1\")"
+          "sensorToRequestProcessorModule": "FROM /messages/modules/SimulatedTemperatureSensor/outputs/temperatureOutput INTO BrokeredEndpoint(\"/modules/RequestProcessorModule/inputs/input1\")",
+          "azureblobstorageoniotedgeToIoTHub": "FROM /messages/modules/azureblobstorageoniotedge/outputs/* INTO $upstream"
         },
         "storeAndForwardConfiguration": {
           "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "azureblobstorageoniotedge": {
+      "properties.desired": {
+        "deviceToCloudUploadProperties": {
+          "uploadOn": true,
+          "uploadOrder": "OldestFirst",
+          "cloudStorageConnectionString": "",
+          "storageContainersForUpload": {
+            "none": {
+              "target": "none"
+            }
+          }
         }
       }
     }

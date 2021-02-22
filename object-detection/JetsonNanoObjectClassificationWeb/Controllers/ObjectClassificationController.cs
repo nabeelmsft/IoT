@@ -12,6 +12,7 @@
     {
         private const string queueName = "jetson-nano-object-classification-requests";
         private const string containerName = "jetson-nano-object-classification-responses";
+        private const string imageWithDetection = "imageWithDetection.jpg";
 
         private readonly ILogger<ObjectClassificationController> _logger;
         private readonly IConfiguration _configuration;
@@ -26,25 +27,32 @@
 
         public IActionResult Index(string requestId, string className)
         {
-            Guid requestGuid = new Guid(requestId);
             string imageUri = string.Empty;
-            BlobContainerClient blobContainerClient = new BlobContainerClient(storageConnectionString, "jetson-nano-object-classification-responses");
-            foreach (BlobItem blobItem in blobContainerClient.GetBlobs(BlobTraits.All))
+            Guid requestGuid = default(Guid);
+            if (Guid.TryParse(requestId, out requestGuid))
             {
-                if (blobItem != null && !string.IsNullOrEmpty(blobItem.Name) && blobItem.Name.Equals($"{requestId}/imageWithDetection.jpg", StringComparison.InvariantCultureIgnoreCase))
+                BlobContainerClient blobContainerClient = new BlobContainerClient(storageConnectionString, containerName);
+                var getBlobsAsync = await blobContainerClient.GetBlobsAsync(BlobTraits.All);
+
+                foreach (BlobItem blobItem in getBlobsAsync)
                 {
-                    imageUri = $"{blobContainerClient.Uri.AbsoluteUri}/{blobItem.Name}";
+                    if (string.Equals(blobItem?.Name, $"{requestId}/{imageWithDetection}", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        imageUri = $"{blobContainerClient.Uri.AbsoluteUri}/{blobItem.Name}";
+                    }
                 }
+
+                ObjectClassificationModel objectClassificationModel = new ObjectClassificationModel()
+                {
+                    ImageUri = new Uri(imageUri),
+                    RequestId = requestGuid,
+                    ClassName = className
+                };
+
+                return View(objectClassificationModel);
             }
 
-            ObjectClassificationModel objectClassificationModel = new ObjectClassificationModel()
-            {
-                ImageUri = new Uri(imageUri),
-                RequestId = requestGuid,
-                ClassName = className
-            };
-
-            return View(objectClassificationModel);
+            return View(null);
         }
 
         [HttpGet("HasImageUploaded")]
@@ -55,7 +63,7 @@
             BlobContainerClient blobContainerClient = new BlobContainerClient(storageConnectionString, "jetson-nano-object-classification-responses");
             foreach(BlobItem blobItem in blobContainerClient.GetBlobs(BlobTraits.All))
             {
-                if(blobItem != null && !string.IsNullOrEmpty(blobItem.Name) && blobItem.Name.Equals($"{imageContainerGuid}/imageWithDetection.jpg",StringComparison.InvariantCultureIgnoreCase))
+                if (string.Equals(blobItem?.Name, $"{imageContainerGuid}/{imageWithDetection}", StringComparison.InvariantCultureIgnoreCase))
                 {
                     return new JsonResult($"{blobContainerClient.Uri.AbsoluteUri}/{blobItem.Name}");
                 }
