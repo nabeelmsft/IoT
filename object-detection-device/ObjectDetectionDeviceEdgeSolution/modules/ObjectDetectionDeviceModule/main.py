@@ -2,6 +2,8 @@
 # Licensed under the MIT license. See LICENSE file in the project root for
 # full license information.
 
+import uuid
+import re
 import json
 import time
 import os
@@ -19,11 +21,10 @@ RECEIVED_MESSAGES = 0
 
 async def main():
     try:
-        print ( "Hello" )
         if not sys.version >= "3.5.3":
             raise Exception( "The sample requires python 3.5.3+. Current version of Python: %s" % sys.version )
-        print ( "IoT Edge Module for Python - version:1.1.71120" )
-
+        print ("IoT Edge Module for Python - version:1.6.71120" )
+        print (':'.join(re.findall('..', '%012x' % uuid.getnode()))) 
         # The client object is used to interact with your Azure IoT hub.
         module_client = IoTHubModuleClient.create_from_edge_environment()
 
