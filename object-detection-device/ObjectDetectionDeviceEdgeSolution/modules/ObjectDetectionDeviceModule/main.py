@@ -6,6 +6,7 @@ import uuid
 import re
 import json
 import time
+import types
 import os
 import sys
 import asyncio
@@ -23,8 +24,7 @@ async def main():
     try:
         if not sys.version >= "3.5.3":
             raise Exception( "The sample requires python 3.5.3+. Current version of Python: %s" % sys.version )
-        print ("IoT Edge Module for Python - version:1.6.71120" )
-        print (':'.join(re.findall('..', '%012x' % uuid.getnode()))) 
+        print ("IoT Edge Module for Python - version:1.5.91120" )
         # The client object is used to interact with your Azure IoT hub.
         module_client = IoTHubModuleClient.create_from_edge_environment()
 
@@ -45,6 +45,24 @@ async def main():
                             payload=method_request.payload
                         )
                     )
+                    print(method_request.payload)
+                    print(type(method_request.payload))
+                    json_object = json.dumps(method_request.payload)
+                    print(json_object)
+                    print(type(json_object))
+                    json_deserialized = json.loads(json_object)
+                    print(json_deserialized)
+                    print(type(json_deserialized))
+                    module_key = hex(uuid.getnode())
+                    print(module_key)
+                    correlation_id = json_deserialized["CoorelationId"]
+                    class_name = json_deserialized["ClassName"]
+                    threshold_percentage = json_deserialized["ThresholdPercentage"]
+                    print(correlation_id)
+                    print(class_name)
+                    print(threshold_percentage)
+                    module_payload = correlation_id + "|" + class_name + "|" + str(threshold_percentage) + "|" + module_key
+                    print(module_payload)
                     response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                     response_status = 200                    
 
