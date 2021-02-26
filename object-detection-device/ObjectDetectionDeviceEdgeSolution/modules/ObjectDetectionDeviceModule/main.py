@@ -14,17 +14,68 @@ from six.moves import input
 import threading
 from azure.iot.device.aio import IoTHubModuleClient
 from azure.iot.device import MethodResponse
+from azure.storage.queue.aio import QueueClient
 
 # global counters
 TEMPERATURE_THRESHOLD = 25
 TWIN_CALLBACKS = 0
 RECEIVED_MESSAGES = 0
 
+# A helper class to support async blob and queue actions.
+class StorageHelperAsync:
+    async def block_blob_upload_async(self, upload_path, savedFile):
+        blob_service_client = BlobServiceClient.from_connection_string(
+            os.getenv("storage_connection_string")
+        )
+        container_name = "jetson-nano-object-classification-responses"
+
+        async with blob_service_client:
+            # Instantiate a new ContainerClient
+            container_client = blob_service_client.get_container_client(container_name)
+
+            # Instantiate a new BlobClient
+            blob_client = container_client.get_blob_client(blob=upload_path)
+
+            # Upload content to block blob
+            with open(savedFile, "rb") as data:
+                await blob_client.upload_blob(data)
+                # [END upload_a_blob]
+
+    # Code for listening to Storage queue
+    async def queue_receive_message_async(self):
+        # from azure.storage.queue.aio import QueueClient
+        queue_client = QueueClient.from_connection_string(
+            os.getenv("storage_connection_string"),
+            "iot-edge-object-classification-requests",
+        )
+
+        async with queue_client:
+            response = queue_client.receive_messages(messages_per_page=1)
+            async for message in response:
+                queue_message = message
+                await queue_client.delete_message(message)
+                return queue_message
+
+    async def queue_send_message_async(self, message):
+        # from azure.storage.queue.aio import QueueClient
+        print("storage connection string from send")
+        print(os.getenv("storage_connection_string"))
+        print("end storage connection string from send")
+        queue_client = QueueClient.from_connection_string(
+            os.getenv("storage_connection_string"),
+            "iot-edge-object-classification-requests",
+        )
+
+        async with queue_client:
+            await queue_client.send_message(message)
+    
 async def main():
     try:
         if not sys.version >= "3.5.3":
             raise Exception( "The sample requires python 3.5.3+. Current version of Python: %s" % sys.version )
-        print ("IoT Edge Module for Python - version:1.5.91120" )
+        print ("IoT Edge Module for Python - version:1.3.01121" )
+        print(os.environ['storage_connection_string'])
+        print("Printed storage_connection_string")
         # The client object is used to interact with your Azure IoT hub.
         module_client = IoTHubModuleClient.create_from_edge_environment()
 
@@ -63,6 +114,9 @@ async def main():
                     print(threshold_percentage)
                     module_payload = correlation_id + "|" + class_name + "|" + str(threshold_percentage) + "|" + module_key
                     print(module_payload)
+                    storage_helper = StorageHelperAsync()
+                    await storage_helper.queue_send_message_async(module_payload)
+                    print("message sent to queue")
                     response_payload = {"Response": "Executed direct method {}".format(method_request.name)}
                     response_status = 200                    
 

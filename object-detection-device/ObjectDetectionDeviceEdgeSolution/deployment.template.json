@@ -65,6 +65,11 @@
             "settings": {
               "image": "${MODULES.ObjectDetectionDeviceModule}",
               "createOptions": {}
+            },
+            "env": {
+              "storage_connection_string":{
+                "value": "$STORAGE_CONNECTION_STRING"
+              }
             }
           }
         }
