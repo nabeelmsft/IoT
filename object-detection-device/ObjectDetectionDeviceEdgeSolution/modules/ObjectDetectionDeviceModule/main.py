@@ -36,7 +36,7 @@ async def main():
     try:
         if not sys.version >= "3.5.3":
             raise Exception( "The sample requires python 3.5.3+. Current version of Python: %s" % sys.version )
-        print ("IoT Edge Module for Python - version:1.3.01121" )
+        print ("IoT Edge Module for Python - version:1.4.01121" )
         print(os.environ['storage_connection_string'])
         print("Printed storage_connection_string")
         # The client object is used to interact with your Azure IoT hub.
@@ -119,7 +119,7 @@ async def main():
         # Schedule task for C2D Listener
         listeners = asyncio.gather(input1_listener(module_client), twin_patch_listener(module_client))
 
-        print ( "The sample is now waiting for messages. ")
+        print ( "The iot edge module is now waiting for messages. ")
 
         # Run the stdin listener in the event loop
         loop = asyncio.get_event_loop()
