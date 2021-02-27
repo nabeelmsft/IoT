@@ -1,0 +1,33 @@
+﻿.column {
+   width: 250px;
+   display:block;
+}
+.waiting-area {
+    width: inherit;
+    position: relative;
+    background: yellow;
+    color: forestgreen;
+    animation: blinker 1s linear infinite;
+    align-content:center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: large;
+    font-weight: 700;
+}
+.waiting-area::before {
+    content: "Waiting for image recognition...";
+}
+.authentication-success-large {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: large;
+    font-weight: 700;
+}
+.authentication-success {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: medium;
+    font-weight: 700;
+}
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
