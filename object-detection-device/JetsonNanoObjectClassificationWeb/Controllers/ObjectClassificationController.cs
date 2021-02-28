@@ -12,8 +12,8 @@
 
     public class ObjectClassificationController : Controller
     {
-        private const string queueName = "jetson-nano-object-classification-requests";
-        private const string containerName = "jetson-nano-object-classification-responses";
+        private const string queueName = "iot-edge-object-classification-requests";
+        private const string containerName = "iot-edge-object-classification-responses";
         private const string imageWithDetection = "imageWithDetection.jpg";
 
         private readonly ILogger<ObjectClassificationController> _logger;
@@ -61,7 +61,7 @@
         public JsonResult HasImageUploaded(string imageContainerGuid)
         {
             
-            BlobContainerClient blobContainerClient = new BlobContainerClient(storageConnectionString, "jetson-nano-object-classification-responses");
+            BlobContainerClient blobContainerClient = new BlobContainerClient(storageConnectionString, "iot-edge-object-classification-responses");
             foreach(BlobItem blobItem in blobContainerClient.GetBlobs(BlobTraits.All))
             {
                 if (string.Equals(blobItem?.Name, $"{imageContainerGuid}/{imageWithDetection}", StringComparison.InvariantCultureIgnoreCase))
