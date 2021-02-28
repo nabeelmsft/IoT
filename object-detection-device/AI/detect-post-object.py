@@ -18,7 +18,7 @@ class StorageHelperAsync:
         blob_service_client = BlobServiceClient.from_connection_string(
             os.getenv("STORAGE_CONNECTION_STRING")
         )
-        container_name = "jetson-nano-object-classification-responses"
+        container_name = "iot-edge-object-classification-responses"
 
         async with blob_service_client:
             # Instantiate a new ContainerClient
@@ -37,7 +37,7 @@ class StorageHelperAsync:
         # from azure.storage.queue.aio import QueueClient
         queue_client = QueueClient.from_connection_string(
             os.getenv("STORAGE_CONNECTION_STRING"),
-            "jetson-nano-object-classification-requests",
+            "iot-edge-object-classification-requests",
         )
 
         async with queue_client:
@@ -131,13 +131,18 @@ async def main():
         print("Waiting for request queue_messages")
         print(queue_message)
         if queue_message:
-            has_new_message = True
             queue_message_array = queue_message.content.split("|")
             request_content = queue_message.content
             correlation_id = queue_message_array[0]
             class_for_object_detection = queue_message_array[1]
             threshold_for_object_detection = int(queue_message_array[2])
-
+            module_key = queue_message_array[3]
+            if module_key == os.getenv("MODULE_KEY"):
+                has_new_message = True
+            else:
+                has_new_message = False
+                print("Module key does not match")
+	
             while has_new_message:
                 # capture the image
                 # img, width, height = camera.CaptureRGBA()
@@ -200,7 +205,7 @@ async def main():
                     blob_service_client = BlobServiceClient.from_connection_string(
                         os.getenv("STORAGE_CONNECTION_STRING")
                     )
-                    container_name = "jetson-nano-object-classification-responses"
+                    container_name = "iot-edge-object-classification-responses"
 
                     # Create a blob client using the local file name as the name for the blob
                     folderMark = "/"
