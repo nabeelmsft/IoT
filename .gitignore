@@ -6,3 +6,8 @@
 /object-detection/JetsonNanoObjectClassificationWeb/bin/Debug/netcoreapp3.1
 /object-detection/JetsonNanoObjectClassificationWeb/obj
 /object-detection/JetsonNanoObjectClassificationWeb/appsettings.Development.json
+/object-detection-device/JetsonNanoObjectClassificationWeb/.vs/JetsonNanoObjectClassificationWeb
+/object-detection-device/JetsonNanoObjectClassificationWeb/bin
+/object-detection-device/JetsonNanoObjectClassificationWeb/obj
+/object-detection-device/JetsonNanoObjectClassificationWeb/Properties
+/object-detection-device/JetsonNanoObjectClassificationWeb/appsettings.Development.json
