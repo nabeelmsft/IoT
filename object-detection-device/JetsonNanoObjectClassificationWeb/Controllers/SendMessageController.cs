@@ -73,7 +73,7 @@
 
                 methodInvocation.SetPayloadJson(jsonPayload);
 
-                // Invoke the direct method asynchronously and get the response from the simulated device.
+                // Invoke the direct method asynchronously and get the response from the IoT Edge module.
                 var response = await _serviceClient.InvokeDeviceMethodAsync("object-detection-device", "ObjectDetectionDeviceModule", methodInvocation);
             }
             catch(Exception exception)
