@@ -36,6 +36,9 @@ At a high-level, the following actions are taking place:
 3. NVIDIA® Jetson Nano™ device runs custom AI model using code mentioned in following sections. The result of this step is completion of the second factor of authentication.
 4. The control is passed back to Authentication Front-end which validates the results that came from NVIDIA® Jetson Nano™ device.
 
+Here is the complete architecture showing various components:
+
+![Architecture](./images/posts/jetson-azure-sdk-architecture.png "Architecture")
 ## Authentication Front-end
 
 The role of the Authentication Front-end is to initiate the two-factor flow and interact with Azure using the new Azure SDKs.
@@ -186,9 +189,9 @@ The following steps are taken on the Authentication Front-end:
 ![Azure Storage Queue view](./images/posts/jetson-azure-sdk-queue-message-detail.PNG "Azure Storage Queue detail view")
 5. The NVIDIA® Jetson Nano™ device, which is listening to Azure Storage Queue, initiates the second factor and completes the second factor.
 6. Once the second factor is completed, the NVIDIA® Jetson Nano™ device posts the captured image for the second factor to Azure Storage Blob as shown below:
-![Azure Blob storage view](./images/posts/2021-02-09-two-factor-auth-jetson-azure-sdk-storage-view.PNG "Azure Blob storage view")
+![Azure Blob storage view](./images/posts/jetson-azure-sdk-storage-view.PNG "Azure Blob storage view")
 7. The web interface shows the captured image, completing the flow as shown below:
-![Second factor](./images/posts/2021-02-09-two-factor-auth-jetson-azure-sdk-gil-detected-image.PNG "Second factor")
+![Second factor](./images/posts/jetson-azure-sdk-gil-detected-image.PNG "Second factor")
 
 ## IoT Edge module
 
@@ -353,19 +356,26 @@ module_key = hex(uuid.getnode())
 
 Once the 'module key' is generated a new request is created by adding 'module key' to the original request that came to IoT Edge module. The new request is sent to Azure Storage queue using the new Azure SDK.
 
+Here is the link for code for main.py to try out: <https://gist.github.com/nabeelmsft/ef53454da5b0afd2dce200c81b963ee4>
+
 ## Running AI on the Edge
 
 ### Device pre-requisites
 
 1. NVIDIA® Jetson Nano™ device with camera attached to capture video image.
 2. Custom pre-training model deployed on the device.
-3. Location path to the custom model file (.onnx file). This information is presented as --model parameter to the command mentioned in Steps section. For this tutorial we have prepared a custom model and saved as "~/gil_background_hulk/resenet18.onnx".
+3. Location path to the custom model file (.onnx file). This information is presented as --model parameter to the command mentioned in Steps section. For this tutorial we have prepared a custom model and saved as "~/IoT/object-detection-device/AI/gil_background_hulk/resenet18.onnx".
 4. Location path to the classification text file (labels.txt). This information is presented as --labels parameter to the command mentioned in Steps section.
-5. Class name of the object that is target object that needs to be detected. This is presented as --classNameForTargetObject.
+5. MODULE_KEY environment variable that is representing the IoT Edge module's MAC address. This is generate by the IoT Edge module as mentioned in the previous section. Since the IoT Edge module is running as docker containers, you can retrieve that by running docker inspect command as shown below:
+
+```bash
+sudo docker inspect <container name or id>|grep MacAddress
+```
+
 6. Azure IoT Hub libraries for Python. Install the azure-iot-device package for IoTHubDeviceClient.
 
 ```bash
-pip install azure-iot-device
+pip3 install azure-iot-device
 ```
 
 ### Code running AI on the Edge
@@ -393,7 +403,7 @@ class StorageHelperAsync:
         blob_service_client = BlobServiceClient.from_connection_string(
             os.getenv("STORAGE_CONNECTION_STRING")
         )
-        container_name = "jetson-nano-object-classification-responses"
+        container_name = "iot-edge-object-classification-responses"
 
         async with blob_service_client:
             # Instantiate a new ContainerClient
@@ -412,7 +422,7 @@ class StorageHelperAsync:
         # from azure.storage.queue.aio import QueueClient
         queue_client = QueueClient.from_connection_string(
             os.getenv("STORAGE_CONNECTION_STRING"),
-            "jetson-nano-object-classification-requests",
+            "iot-edge-object-classification-requests",
         )
 
         async with queue_client:
@@ -506,13 +516,18 @@ async def main():
         print("Waiting for request queue_messages")
         print(queue_message)
         if queue_message:
-            has_new_message = True
             queue_message_array = queue_message.content.split("|")
             request_content = queue_message.content
             correlation_id = queue_message_array[0]
             class_for_object_detection = queue_message_array[1]
             threshold_for_object_detection = int(queue_message_array[2])
-
+            module_key = queue_message_array[3]
+            if module_key == os.getenv("MODULE_KEY"):
+                has_new_message = True
+            else:
+                has_new_message = False
+                print("Module key does not match")
+	
             while has_new_message:
                 # capture the image
                 # img, width, height = camera.CaptureRGBA()
@@ -575,12 +590,13 @@ async def main():
                     blob_service_client = BlobServiceClient.from_connection_string(
                         os.getenv("STORAGE_CONNECTION_STRING")
                     )
-                    container_name = "jetson-nano-object-classification-responses"
+                    container_name = "iot-edge-object-classification-responses"
 
                     # Create a blob client using the local file name as the name for the blob
                     folderMark = "/"
                     upload_path = folderMark.join([correlation_id, savedFile])
 
+                    # blob_helper = StorageHelperAsync()
                     await storage_helper.block_blob_upload_async(upload_path, savedFile)
 
                     await device_client.send_message(message)
@@ -597,16 +613,16 @@ if __name__ == "__main__":
     loop.close()
 ```
 
-Here is the link for code to try out: <https://gist.github.com/nabeelmsft/f079065d98d39f271b205b71bc8c48bc>
+Here is the link for code to try out: <https://gist.github.com/nabeelmsft/1fe04b2a4e40cd7f53fd7c49bd40e7c3>
 
 #### Code flow
 
-![Device side code flow](./images/posts/2021-02-09-two-factor-auth-jetson-azure-sdk-detectobjectflow.png "Device side code flow")
+![Device side code flow](./images/posts/jetson-azure-sdk-detectobjectflow.png "Device side code flow")
 
 The following actions take place in python code running on the device side:
 
 1. The device code is constantly reading the request coming to Azure Storage Queue.
-2. Once request is received; code extracts out which object to detect and what threshold to use for object detection. The example mentioned in the diagram shows the message as: 0000-0000-0000-0000|hulk|80. The code will extract "hulk" as the object that needs to be detected and "80" as threshold value. This format is just an example that is used to provide input values to device side code.
+2. Once request is received; code extracts out which object to detect and what threshold to use for object detection. The example mentioned in the diagram shows the message as: 0000-0000-0000-0000|hulk|80|0x23334333. The code will extract "hulk" as the object that needs to be detected, "80" as threshold value and 0x23334333 as 'module key' to be validated. This format is just an example that is used to provide input values to device side code.
 3. Using the custom AI model (example: ~/gil_background_hulk/resenet18.onnx) running on Jetson Nano device, object is searched based on the request.
 4. As soon as object is detected, the python code running on Jetson Nano device posts captured image to Azure Blob storage.
 5. In addition, the code running on Jetson Nano device sends message to Azure IoT hub informing of correct match for the request.
@@ -615,7 +631,7 @@ Once the device side code completes the flow, the object detected image is poste
 
 ## Conclusion
 
-In this post we have seen how simple it is for running AI on edge using Nvidia Jetson nano device leveraging Azure platform. Azure SDKs are designed to work great with a python on linux based IoT devices. We have also seen how Azure SDK plays the role of stitching different components together for a complete end to end solution.
+In this post we have seen how simple it is for running IoT Edge modules and AI on edge using NVIDIA® Jetson Nano™ on same device leveraging Azure platform. Azure SDKs are designed to work great with a python on linux based IoT devices. We have also seen how Azure SDK plays the role of stitching different components together for a complete end to end solution.
 
 <!-- TIPS:
 - Use `SDK` when talking about all of the client libraries.
